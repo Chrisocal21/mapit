@@ -1470,6 +1470,10 @@
                         <label for="thickenAmount">Thickness: <span id="thickenAmountValue">2</span>px</label>
                         <input type="range" id="thickenAmount" min="0.5" max="5" step="0.5" value="2" style="width: 100%;" />
                     </div>
+                    <div class="control-group checkbox-group">
+                        <input type="checkbox" id="removeFerryLinesCheck" />
+                        <label for="removeFerryLinesCheck">Remove Ferry/Dashed Lines</label>
+                    </div>
                 </div>
 
                 <div class="modal-control-section">
@@ -3088,6 +3092,104 @@
             console.log('Processing complete!');
         }
 
+        // Remove ferry lines and dashed routes by detecting small isolated segments
+        function removeDashedLines(imageData, width, height) {
+            const data = imageData.data;
+            const visited = new Uint8Array(width * height);
+            const result = new Uint8ClampedArray(data);
+            
+            // Find all connected components of black pixels
+            function floodFill(startX, startY) {
+                const stack = [[startX, startY]];
+                const component = [];
+                
+                while (stack.length > 0) {
+                    const [x, y] = stack.pop();
+                    const idx = y * width + x;
+                    
+                    if (x < 0 || x >= width || y < 0 || y >= height) continue;
+                    if (visited[idx]) continue;
+                    
+                    const pixelIdx = idx * 4;
+                    if (data[pixelIdx] !== 0) continue; // Not black
+                    
+                    visited[idx] = 1;
+                    component.push([x, y]);
+                    
+                    // Check 8-connected neighbors
+                    stack.push([x + 1, y]);
+                    stack.push([x - 1, y]);
+                    stack.push([x, y + 1]);
+                    stack.push([x, y - 1]);
+                    stack.push([x + 1, y + 1]);
+                    stack.push([x - 1, y - 1]);
+                    stack.push([x + 1, y - 1]);
+                    stack.push([x - 1, y + 1]);
+                }
+                
+                return component;
+            }
+            
+            // Analyze each connected component
+            const componentsToRemove = [];
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const idx = y * width + x;
+                    const pixelIdx = idx * 4;
+                    
+                    if (!visited[idx] && data[pixelIdx] === 0) {
+                        const component = floodFill(x, y);
+                        
+                        if (component.length > 0) {
+                            // Calculate component characteristics
+                            const minX = Math.min(...component.map(p => p[0]));
+                            const maxX = Math.max(...component.map(p => p[0]));
+                            const minY = Math.min(...component.map(p => p[1]));
+                            const maxY = Math.max(...component.map(p => p[1]));
+                            
+                            const compWidth = maxX - minX + 1;
+                            const compHeight = maxY - minY + 1;
+                            const area = component.length;
+                            const boundingArea = compWidth * compHeight;
+                            const density = area / boundingArea;
+                            
+                            // Remove small isolated segments likely to be dashed lines
+                            // Criteria: small area, low density (sparse), elongated
+                            const maxDimension = Math.max(compWidth, compHeight);
+                            const minDimension = Math.min(compWidth, compHeight);
+                            const aspectRatio = maxDimension / (minDimension + 1);
+                            
+                            // Remove if:
+                            // - Very small (< 100 pixels) and sparse (density < 0.3)
+                            // - Small (< 500 pixels) and very elongated (aspect ratio > 10) and sparse
+                            if ((area < 100 && density < 0.3) ||
+                                (area < 500 && aspectRatio > 10 && density < 0.4)) {
+                                componentsToRemove.push(component);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Remove the identified components
+            for (const component of componentsToRemove) {
+                for (const [x, y] of component) {
+                    const pixelIdx = (y * width + x) * 4;
+                    result[pixelIdx] = 255;
+                    result[pixelIdx + 1] = 255;
+                    result[pixelIdx + 2] = 255;
+                }
+            }
+            
+            // Copy result back to imageData
+            for (let i = 0; i < data.length; i++) {
+                data[i] = result[i];
+            }
+            
+            return imageData;
+        }
+
         // Apply morphological dilation to thicken black features (text, lines)
         function applyDilation(imageData, width, height, iterations) {
             const data = imageData.data;
@@ -3502,6 +3604,12 @@
             }
         });
 
+        document.getElementById('removeFerryLinesCheck').addEventListener('change', function() {
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
         // Modal aspect ratio change - sync to main and regenerate
         document.getElementById('modalAspectRatio').addEventListener('change', function(e) {
             const newRatio = e.target.value;
@@ -3538,6 +3646,7 @@
             const blackText = document.getElementById('modalBlackText').checked;
             const thickenText = document.getElementById('thickenTextCheck').checked;
             const thickenAmount = parseFloat(document.getElementById('thickenAmount').value);
+            const removeFerryLines = document.getElementById('removeFerryLinesCheck').checked;
             
             // Store text mask if black text is enabled and invert is on
             let textMask = null;
@@ -3620,6 +3729,12 @@
             // Apply thickening (morphological dilation) if enabled
             if (thickenText) {
                 imageData = applyDilation(imageData, canvas.width, canvas.height, thickenAmount);
+                data = imageData.data;
+            }
+            
+            // Remove ferry lines and dashed routes if enabled
+            if (removeFerryLines) {
+                imageData = removeDashedLines(imageData, canvas.width, canvas.height);
                 data = imageData.data;
             }
             
