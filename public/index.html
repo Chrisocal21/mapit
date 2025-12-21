@@ -1,0 +1,2425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Engraving Image Generator</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: #2c2c2c;
+            color: #fff;
+            padding: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: #1e1e1e;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #fff;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            background: #3c3c3c;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        #searchInput::placeholder {
+            color: #888;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: #454545;
+        }
+
+        #searchResults {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+        }
+
+        .search-result-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .search-result-item:hover {
+            background: #f5f5f5;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: #2c2c2c;
+            gap: 0.5rem 1rem;
+            border-top: 1px solid #1e1e1e;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0 0.5rem;
+            border-left: 1px solid #404040;
+        }
+
+        .toolbar-group:first-child {
+            border-left: none;
+            padding-left: 0;
+        }
+
+        .toolbar-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            margin-right: 0.25rem;
+        }
+
+        .toolbar select,
+        .toolbar input[type="number"] {
+            padding: 0.375rem 0.5rem;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: #3c3c3c;
+            color: #fff;
+            min-width: 80px;
+        }
+
+        .toolbar select:focus,
+        .toolbar input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: #454545;
+        }
+
+        .toolbar-button {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            background: #3c3c3c;
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .toolbar-button:hover {
+            background: #4a90e2;
+            border-color: #4a90e2;
+        }
+
+        .toolbar-button.active {
+            background: #4a90e2;
+            border-color: #4a90e2;
+        }
+        
+        @keyframes flash {
+            0%, 100% { background: #4a90e2; box-shadow: 0 0 10px #4a90e2; }
+            50% { background: #66a3e0; box-shadow: 0 0 20px #4a90e2; }
+        }
+        
+        .toolbar-button.flash {
+            animation: flash 0.6s ease-in-out 3;
+        }
+
+        .toolbar-badge {
+            display: inline-block;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+
+        .toolbar-badge.orange {
+            background: #ff9800;
+            color: #fff;
+        }
+
+        .toolbar-badge.green {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .toolbar-badge.blue {
+            background: #4a90e2;
+            color: #fff;
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Map container */
+        #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #e5e5e5;
+        }
+
+        /* Info display */
+        .info-display {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border: 2px solid #e9ecef;
+        }
+
+        .info-display strong {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        /* Preview */
+        #previewContainer {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        #previewImage {
+            width: 100%;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4a90e2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Instructions */
+        .instructions {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #1565c0;
+            border: 2px solid rgba(74, 144, 226, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .instructions strong {
+            color: #0d47a1;
+        }
+
+        /* Helper text */
+        .helper-text {
+            color: #6c757d;
+            font-size: 0.8rem;
+            display: block;
+            margin-top: 0.375rem;
+            line-height: 1.4;
+        }
+
+        /* Input groups with number input */
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .input-group input[type="range"] {
+            flex: 1;
+            margin: 0;
+        }
+
+        .input-group input[type="number"] {
+            width: 70px;
+            padding: 0.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .input-group input[type="number"]:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        /* Threshold display */
+        .threshold-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .threshold-value {
+            background: #4a90e2;
+            color: white;
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /* Custom ratio indicator */
+        .custom-ratio-badge {
+            display: none;
+            background: #ff9800;
+            color: white;
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            animation: fadeIn 0.3s;
+        }
+
+        .custom-ratio-badge.active {
+            display: inline-block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .ratio-label-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Square indicator */
+        .square-indicator {
+            display: none;
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            animation: fadeIn 0.3s;
+        }
+
+        .square-indicator.active {
+            display: inline-block;
+        }
+
+        /* Envelope warp button */
+        .warp-button {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: #495057;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .warp-button:hover {
+            border-color: #495057;
+            background: #f8f9fa;
+        }
+
+        .warp-button:active {
+            transform: translateY(1px);
+        }
+
+        .warp-button.active {
+            border-color: #007bff;
+            background: #e7f3ff;
+            color: #007bff;
+        }
+
+        .warp-value {
+            background: #6c757d;
+            color: white;
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .warp-button.active .warp-value {
+            background: #007bff;
+        }
+
+        /* Range slider styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e9ecef;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4a90e2;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #357abd;
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4a90e2;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            background: #357abd;
+            transform: scale(1.1);
+        }
+
+        /* Large Preview Modal */
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .preview-modal.active {
+            display: flex;
+        }
+
+        .preview-modal-content {
+            background: white;
+            border-radius: 8px;
+            max-width: 95vw;
+            max-height: 95vh;
+            width: 1400px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .preview-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .preview-canvas-large {
+            max-width: 100%;
+            max-height: calc(95vh - 120px);
+            border: 2px solid #ddd;
+            background: white;
+            cursor: grab;
+        }
+        
+        .preview-canvas-large:active {
+            cursor: grabbing;
+        }
+
+        .preview-right {
+            width: 350px;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .close-modal:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .modal-control-section {
+            margin-bottom: 20px;
+        }
+
+        .modal-control-section h3 {
+            font-size: 1rem;
+            margin: 0 0 10px 0;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .btn-modal-primary {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .btn-modal-primary:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 1024px) {
+            .preview-modal-content {
+                flex-direction: column;
+            }
+
+            .preview-right {
+                width: 100%;
+                max-height: 300px;
+            }
+
+            .preview-left {
+                max-height: 60vh;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .control-panel {
+                width: 100%;
+                max-height: 40vh;
+                order: 2;
+            }
+
+            #map {
+                order: 1;
+                height: 60vh;
+            }
+
+            header {
+                padding: 0.75rem;
+            }
+
+            h1 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Map controls styling */
+        .leaflet-control-attribution {
+            font-size: 0.7rem;
+        }
+
+        /* Bounding box info overlay */
+        .bbox-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            max-width: 200px;
+        }
+
+        .bbox-info strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-top">
+                <h1>Map Engraving Generator</h1>
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search location..."
+                        autocomplete="off"
+                    />
+                    <div id="searchResults"></div>
+                </div>
+            </div>
+            
+            <div class="toolbar">
+                <!-- Map Style -->
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Style</span>
+                    <select id="mapStyle">
+                        <option value="streets-v12" selected>Streets</option>
+                        <option value="light-v11">Light</option>
+                        <option value="dark-v11">Dark</option>
+                        <option value="outdoors-v12">Outdoors</option>
+                    </select>
+                </div>
+                
+                <!-- Output Size -->
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Size</span>
+                    <select id="imageSize">
+                        <option value="800">800px</option>
+                        <option value="1000">1000px</option>
+                        <option value="1280">1280px</option>
+                        <option value="2000" selected>2000px</option>
+                        <option value="2560">2560px</option>
+                    </select>
+                    <span style="font-size: 0.65rem; color: #888;" id="actualSizeHelper">2000×2000</span>
+                </div>
+                
+                <!-- Aspect Ratio -->
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Ratio</span>
+                    <select id="aspectRatio">
+                        <option value="1:1" selected>1:1</option>
+                        <option value="4:3">4:3</option>
+                        <option value="3:2">3:2</option>
+                        <option value="16:9">16:9</option>
+                        <option value="2:1">2:1</option>
+                        <option value="3:1">3:1</option>
+                        <option value="3:4">3:4</option>
+                        <option value="2:3">2:3</option>
+                        <option value="1:2">1:2</option>
+                    </select>
+                    <span class="toolbar-badge orange" id="customRatioBadge" style="display: none;">Custom</span>
+                    <span class="toolbar-badge green" id="squareIndicator" style="display: none;">Square</span>
+                </div>
+                
+                <!-- Contrast -->
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Contrast</span>
+                    <input type="number" id="contrastThreshold" min="0" max="255" value="215" style="width: 60px;" />
+                </div>
+                
+                <!-- Effects -->
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-button" id="lineArtBtn" title="Lazer Mode">Lazer</button>
+                    <button type="button" class="toolbar-button" id="edgeDetectionBtn" title="Edge Detection">Edge</button>
+                    <button type="button" class="toolbar-button" id="invertColorsBtn" title="Invert Colors">Invert</button>
+                    <button type="button" class="toolbar-button" id="envelopeWarpBtn" title="Envelope Warp">Warp: <span id="warpValue">Off</span></button>
+                </div>
+                
+                <!-- Selection Controls -->
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-button" id="lockSelectionBtn" title="Lock Shape">🔒</button>
+                    <button type="button" class="toolbar-button" id="lockZoomBtn" title="Lock Zoom">📏</button>
+                </div>
+                
+                <!-- Dimensions -->
+                <div class="toolbar-group">
+                    <input type="number" id="setWidth" placeholder="W" min="0.1" step="0.1" style="width: 50px;" title="Width" />
+                    <span style="color: #666;">×</span>
+                    <input type="number" id="setHeight" placeholder="H" min="0.1" step="0.1" style="width: 50px;" title="Height" />
+                    <select id="dimensionUnit" style="width: 55px;">
+                        <option value="in" selected>in</option>
+                        <option value="mm">mm</option>
+                        <option value="cm">cm</option>
+                        <option value="m">m</option>
+                        <option value="km">km</option>
+                        <option value="ft">ft</option>
+                        <option value="mi">mi</option>
+                    </select>
+                    <button type="button" class="toolbar-button" id="applyDimensionsBtn" title="Apply Dimensions" style="padding: 0.375rem 0.5rem;">Set</button>
+                </div>
+                
+                <!-- Actions -->
+                <div class="toolbar-group">
+                    <button type="button" class="toolbar-button" id="generateBtn" style="background: #4a90e2; border-color: #4a90e2;">Generate</button>
+                    <button type="button" class="toolbar-button" id="downloadBtn" disabled>Download</button>
+                    <button type="button" class="toolbar-button" id="openPreviewBtn" disabled>Preview</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Map -->
+            <div id="map">
+                <div class="bbox-info" id="bboxInfo">
+                    <strong>Selection Info</strong>
+                    <div id="bboxCoords">--</div>
+                    <div id="selectionInfo" style="margin-top: 0.5rem;">
+                        <strong>Center:</strong> <span id="centerInfo">--</span><br>
+                        <strong>Dimensions:</strong> <span id="dimensionsInfo">--</span><br>
+                        <strong>Rotation:</strong> <span id="rotationInfo">0°</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hidden preview canvas -->
+            <canvas id="previewCanvas" style="display: none;"></canvas>
+        </div>
+    </div>
+
+    <!-- Large Preview Modal -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-modal-content">
+            <div class="preview-left">
+                <div style="position: relative;">
+                    <canvas id="modalPreviewCanvas" class="preview-canvas-large"></canvas>
+                    <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 0.5rem; border-radius: 4px; display: flex; gap: 0.5rem; align-items: center;">
+                        <button id="zoomOut" style="padding: 0.25rem 0.5rem; background: #3c3c3c; color: white; border: none; border-radius: 3px; cursor: pointer;">-</button>
+                        <span id="zoomLevel" style="color: white; font-size: 0.875rem; min-width: 50px; text-align: center;">100%</span>
+                        <button id="zoomIn" style="padding: 0.25rem 0.5rem; background: #3c3c3c; color: white; border: none; border-radius: 3px; cursor: pointer;">+</button>
+                        <button id="zoomReset" style="padding: 0.25rem 0.5rem; background: #3c3c3c; color: white; border: none; border-radius: 3px; cursor: pointer;">Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div class="preview-right">
+                <div class="modal-header">
+                    <h2>Preview & Adjust</h2>
+                    <button class="close-modal" id="closeModal">&times;</button>
+                </div>
+
+                <div class="modal-control-section">
+                    <h3>Image Settings</h3>
+                    <div class="control-group">
+                        <label for="modalImageSize">Output Size (px)</label>
+                        <select id="modalImageSize">
+                            <option value="800">800 x 800</option>
+                            <option value="1000">1000 x 1000</option>
+                            <option value="1280">1280 x 1280 (max standard)</option>
+                            <option value="2000" selected>2000 x 2000 (retina)</option>
+                            <option value="2560">2560 x 2560 (retina)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="modalAspectRatio">Aspect Ratio</label>
+                        <select id="modalAspectRatio">
+                            <option value="1:1" selected>1:1 Square</option>
+                            <option value="4:3">4:3 Landscape</option>
+                            <option value="3:2">3:2 Landscape</option>
+                            <option value="16:9">16:9 Wide</option>
+                            <option value="2:1">2:1 Extra Wide</option>
+                            <option value="3:1">3:1 Ultra Wide</option>
+                            <option value="4:1">4:1 Panoramic</option>
+                            <option value="5:1">5:1 Super Panoramic</option>
+                            <option value="3:4">3:4 Portrait</option>
+                            <option value="2:3">2:3 Portrait</option>
+                            <option value="1:2">1:2 Tall Portrait</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-control-section">
+                    <h3>Processing Settings</h3>
+                    <div class="control-group">
+                        <label for="modalContrastThreshold">Contrast Threshold: <span id="modalThresholdValue">215</span></label>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <input 
+                                type="range" 
+                                id="modalContrastThreshold" 
+                                min="0" 
+                                max="255" 
+                                value="215"
+                                style="flex: 1;"
+                            />
+                            <input 
+                                type="number" 
+                                id="modalContrastThresholdInput" 
+                                min="0" 
+                                max="255" 
+                                value="215"
+                                style="width: 60px; padding: 4px; border: 1px solid #ddd; border-radius: 4px;"
+                            />
+                        </div>
+                        <small style="color: #666; font-size: 0.85em; display: block; margin-top: 4px;">Adjust in real-time to see changes</small>
+                    </div>
+                    <div class="control-group checkbox-group">
+                        <input type="checkbox" id="modalEdgeDetection" />
+                        <label for="modalEdgeDetection">Enable Edge Detection</label>
+                    </div>
+                    <div class="control-group checkbox-group">
+                        <input type="checkbox" id="modalInvertColors" />
+                        <label for="modalInvertColors">Invert Colors</label>
+                    </div>
+                </div>
+
+                <div class="modal-control-section">
+                    <h3>Current Selection Info</h3>
+                    <div class="info-display" id="modalSelectionInfo">
+                        <strong>Center:</strong> --<br>
+                        <strong>Area:</strong> --
+                    </div>
+                </div>
+
+                <button class="btn-modal-primary" id="modalDownloadBtn">Download High-Res PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing image...</p>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            defaultCenter: [40.7128, -74.0060], // New York City
+            defaultZoom: 13,
+            defaultBounds: {
+                north: 40.7628,
+                south: 40.6628,
+                east: -73.9560,
+                west: -74.0560
+            }
+        };
+
+        // Global variables
+        let map;
+        let boundingBox;
+        let processedImageData = null;
+        let originalImageElement = null;
+        let currentEnvelopeWarp = 0; // 0, 1, 2, 3, 4 for Off, -1%, -2%, -3%, -4%
+        let isDragModeEnabled = false; // Keyboard control for dragging
+        let rotationAngle = 0; // Rotation angle in degrees
+        let rotationOverlay = null; // Visual indicator for rotation
+        let baseLatDiff = 0; // Store unrotated dimensions
+        let baseLngDiff = 0;
+        let isSelectionLocked = false; // Lock to prevent resizing
+        let lastZoomLevel = 13; // Track zoom level for scaling
+        let isZoomLocked = false; // Lock to prevent zoom scaling
+        let edgeDetectionEnabled = false; // Edge detection state
+        let invertColorsEnabled = false; // Invert colors state
+        let lazerMode = false; // Lazer mode state
+        let previewZoom = 1; // Preview modal zoom level
+        let previewPanX = 0; // Preview modal pan X
+        let previewPanY = 0; // Preview modal pan Y
+        let isPanning = false; // Preview modal panning state
+        let panStartX = 0;
+        let panStartY = 0;
+        let previewBaseImage = null; // Store base image for redrawing
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !e.repeat) {
+                e.preventDefault();
+                isDragModeEnabled = true;
+                document.body.style.cursor = 'grab';
+                if (boundingBox) {
+                    boundingBox.setStyle({ fillColor: '#4a90e2', fillOpacity: 0.3 });
+                }
+                // Disable map dragging and scrollWheelZoom when space is held
+                if (map) {
+                    map.dragging.disable();
+                    map.scrollWheelZoom.disable();
+                }
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                isDragModeEnabled = false;
+                document.body.style.cursor = 'default';
+                if (boundingBox) {
+                    boundingBox.setStyle({ fillColor: '#4a90e2', fillOpacity: 0.1 });
+                }
+                // Re-enable map dragging and scrollWheelZoom
+                if (map) {
+                    map.dragging.enable();
+                    map.scrollWheelZoom.enable();
+                }
+                // Hide rotation overlay
+                if (rotationOverlay) {
+                    rotationOverlay.style.display = 'none';
+                }
+            }
+        });
+
+        // Wheel rotation control (only when SPACE is held)
+        document.addEventListener('wheel', (e) => {
+            if (!isDragModeEnabled || !boundingBox) return;
+            
+            e.preventDefault();
+            
+            // Adjust rotation angle (each wheel tick = 5 degrees)
+            const delta = e.deltaY > 0 ? 5 : -5;
+            rotationAngle = (rotationAngle + delta) % 360;
+            
+            // Update rotation overlay
+            updateRotationOverlay();
+            
+            // Update bounding box visual (convert to polygon for rotation)
+            updateRotatedBoundingBox();
+        }, { passive: false });
+
+        function updateRotationOverlay() {
+            if (!rotationOverlay) {
+                rotationOverlay = document.createElement('div');
+                rotationOverlay.style.position = 'fixed';
+                rotationOverlay.style.top = '50%';
+                rotationOverlay.style.left = '50%';
+                rotationOverlay.style.transform = 'translate(-50%, -50%)';
+                rotationOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
+                rotationOverlay.style.color = 'white';
+                rotationOverlay.style.padding = '15px 25px';
+                rotationOverlay.style.borderRadius = '8px';
+                rotationOverlay.style.fontSize = '18px';
+                rotationOverlay.style.fontWeight = 'bold';
+                rotationOverlay.style.zIndex = '10001';
+                rotationOverlay.style.pointerEvents = 'none';
+                document.body.appendChild(rotationOverlay);
+            }
+            
+            rotationOverlay.textContent = `Rotation: ${rotationAngle}°`;
+            rotationOverlay.style.display = 'block';
+        }
+
+        function updateRotatedBoundingBox() {
+            const center = boundingBox.getBounds().getCenter();
+            
+            // Use stored base dimensions for rotation
+            const angleRad = (rotationAngle * Math.PI) / 180;
+            
+            // Define corners relative to center using base dimensions (unrotated)
+            const baseCorners = [
+                { dlat: baseLatDiff, dlng: -baseLngDiff },  // NW
+                { dlat: baseLatDiff, dlng: baseLngDiff },   // NE
+                { dlat: -baseLatDiff, dlng: baseLngDiff },  // SE
+                { dlat: -baseLatDiff, dlng: -baseLngDiff }  // SW
+            ];
+            
+            // Rotate each corner around center
+            const rotatedCorners = baseCorners.map(({ dlat, dlng }) => {
+                const rotatedLng = dlng * Math.cos(angleRad) - dlat * Math.sin(angleRad);
+                const rotatedLat = dlng * Math.sin(angleRad) + dlat * Math.cos(angleRad);
+                
+                return [center.lat + rotatedLat, center.lng + rotatedLng];
+            });
+            
+            // Update bounding box to show rotation visually
+            boundingBox.setLatLngs(rotatedCorners);
+            
+            // Update corner markers
+            if (window.updateCorners) {
+                window.updateCorners();
+            }
+        }
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map', {
+                center: CONFIG.defaultCenter,
+                zoom: CONFIG.defaultZoom,
+                zoomControl: true,
+                scrollWheelZoom: true
+            });
+
+            // Add tile layer (using OpenStreetMap for preview)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Create initial bounding box
+            createBoundingBox();
+
+            // Add click handler for map
+            map.on('click', function(e) {
+                const bounds = boundingBox.getBounds();
+                const center = e.latlng;
+                const latDiff = (bounds.getNorth() - bounds.getSouth()) / 2;
+                const lngDiff = (bounds.getEast() - bounds.getWest()) / 2;
+                
+                const newBounds = L.latLngBounds(
+                    [center.lat - latDiff, center.lng - lngDiff],
+                    [center.lat + latDiff, center.lng + lngDiff]
+                );
+                
+                boundingBox.setBounds(newBounds);
+                updateBoundingBoxInfo();
+            });
+        }
+
+        // Create bounding box as polygon (to support rotation)
+        function createBoundingBox() {
+            const bounds = L.latLngBounds(
+                [CONFIG.defaultBounds.south, CONFIG.defaultBounds.west],
+                [CONFIG.defaultBounds.north, CONFIG.defaultBounds.east]
+            );
+
+            // Store base dimensions (unrotated)
+            baseLatDiff = (bounds.getNorth() - bounds.getSouth()) / 2;
+            baseLngDiff = (bounds.getEast() - bounds.getWest()) / 2;
+
+            // Create as polygon with 4 corners
+            const corners = [
+                [bounds.getNorth(), bounds.getWest()], // NW
+                [bounds.getNorth(), bounds.getEast()], // NE
+                [bounds.getSouth(), bounds.getEast()], // SE
+                [bounds.getSouth(), bounds.getWest()]  // SW
+            ];
+
+            boundingBox = L.polygon(corners, {
+                color: '#4a90e2',
+                weight: 3,
+                fillOpacity: 0.1
+            }).addTo(map);
+
+            // Make it draggable and editable
+            makeBoundingBoxEditable();
+
+            // Update info on changes
+            map.on('moveend', updateBoundingBoxInfo);
+            
+            // Scale bounding box on zoom
+            map.on('zoomend', function() {
+                const currentZoom = map.getZoom();
+                const zoomDelta = currentZoom - lastZoomLevel;
+                
+                // Only scale if zoom lock is disabled
+                if (zoomDelta !== 0 && !isZoomLocked) {
+                    // Calculate scale factor (each zoom level doubles/halves the scale)
+                    const scaleFactor = Math.pow(2, -zoomDelta);
+                    
+                    const bounds = boundingBox.getBounds();
+                    const center = bounds.getCenter();
+                    
+                    // Scale the base dimensions
+                    baseLatDiff *= scaleFactor;
+                    baseLngDiff *= scaleFactor;
+                    
+                    // Update corners based on new scaled dimensions
+                    if (rotationAngle === 0) {
+                        // No rotation - simple rectangle
+                        const newCorners = [
+                            [center.lat - baseLatDiff, center.lng - baseLngDiff],
+                            [center.lat - baseLatDiff, center.lng + baseLngDiff],
+                            [center.lat + baseLatDiff, center.lng + baseLngDiff],
+                            [center.lat + baseLatDiff, center.lng - baseLngDiff]
+                        ];
+                        boundingBox.setLatLngs(newCorners);
+                    } else {
+                        // Has rotation - maintain rotation
+                        updateRotatedBoundingBox();
+                    }
+                    
+                    updateCorners();
+                    updateBoundingBoxInfo();
+                }
+                
+                lastZoomLevel = currentZoom;
+            });
+
+            updateBoundingBoxInfo();
+        }
+
+        // Make bounding box editable with drag handles
+        function makeBoundingBoxEditable() {
+            let isDragging = false;
+            let dragCorner = null;
+            let startLatLng = null;
+            let startBounds = null;
+
+            // Add corner and edge markers for resizing
+            const corners = [];
+            const edgeMarkers = [];
+            
+            // Make updateCorners accessible globally
+            window.updateCorners = updateCorners;
+
+            function updateCorners() {
+                // Remove old markers
+                corners.forEach(marker => map.removeLayer(marker));
+                corners.length = 0;
+                edgeMarkers.forEach(marker => map.removeLayer(marker));
+                edgeMarkers.length = 0;
+
+                // Get polygon coordinates
+                const latlngs = boundingBox.getLatLngs()[0];
+                
+                // Add corner markers
+                latlngs.forEach((pos, idx) => {
+                    const marker = L.circleMarker(pos, {
+                        radius: 8,
+                        color: isSelectionLocked ? '#999' : '#4a90e2',
+                        fillColor: isSelectionLocked ? '#ccc' : '#fff',
+                        fillOpacity: 1,
+                        weight: 2
+                    }).addTo(map);
+
+                    marker.on('mousedown', (e) => {
+                        // Allow corner dragging anytime unless locked
+                        if (isSelectionLocked) return;
+                        
+                        isDragging = true;
+                        dragCorner = idx;
+                        startLatLng = e.latlng;
+                        const currentLatLngs = boundingBox.getLatLngs()[0];
+                        startBounds = {
+                            corners: currentLatLngs.map(ll => [ll.lat, ll.lng])
+                        };
+                        L.DomEvent.stopPropagation(e);
+                    });
+
+                    corners.push(marker);
+                });
+                
+                // Add edge midpoint markers
+                for (let i = 0; i < latlngs.length; i++) {
+                    const p1 = latlngs[i];
+                    const p2 = latlngs[(i + 1) % latlngs.length];
+                    const midLat = (p1.lat + p2.lat) / 2;
+                    const midLng = (p1.lng + p2.lng) / 2;
+                    
+                    const edgeMarker = L.circleMarker([midLat, midLng], {
+                        radius: 6,
+                        color: isSelectionLocked ? '#999' : '#28a745',
+                        fillColor: isSelectionLocked ? '#ccc' : '#fff',
+                        fillOpacity: 1,
+                        weight: 2
+                    }).addTo(map);
+                    
+                    edgeMarker.on('mousedown', (e) => {
+                        if (isSelectionLocked) return;
+                        
+                        isDragging = true;
+                        dragCorner = `edge-${i}`;
+                        startLatLng = e.latlng;
+                        const currentLatLngs = boundingBox.getLatLngs()[0];
+                        startBounds = {
+                            corners: currentLatLngs.map(ll => [ll.lat, ll.lng]),
+                            edgeIndex: i
+                        };
+                        L.DomEvent.stopPropagation(e);
+                    });
+                    
+                    edgeMarkers.push(edgeMarker);
+                }
+            }
+
+            updateCorners();
+
+            // Handle dragging the entire box (only when SPACE is held)
+            boundingBox.on('mousedown', (e) => {
+                if (!isDragModeEnabled || dragCorner !== null) return;
+                isDragging = true;
+                startLatLng = e.latlng;
+                const currentLatLngs = boundingBox.getLatLngs()[0];
+                startBounds = {
+                    corners: currentLatLngs.map(ll => [ll.lat, ll.lng])
+                };
+                document.body.style.cursor = 'grabbing';
+                map.dragging.disable(); // Ensure map drag is disabled
+                L.DomEvent.preventDefault(e);
+                L.DomEvent.stopPropagation(e);
+            });
+
+            // Also handle drag on map when space is held and mouse is over bounding box
+            map.on('mousedown', (e) => {
+                if (!isDragModeEnabled) return;
+                
+                // Check if click is within bounding box
+                const bounds = boundingBox.getBounds();
+                if (bounds.contains(e.latlng)) {
+                    isDragging = true;
+                    startLatLng = e.latlng;
+                    const currentLatLngs = boundingBox.getLatLngs()[0];
+                    startBounds = {
+                        corners: currentLatLngs.map(ll => [ll.lat, ll.lng])
+                    };
+                    document.body.style.cursor = 'grabbing';
+                    map.dragging.disable();
+                    L.DomEvent.preventDefault(e);
+                    L.DomEvent.stopPropagation(e);
+                }
+            });
+
+            map.on('mousemove', (e) => {
+                if (!isDragging) return;
+
+                if (dragCorner !== null) {
+                    // Check if dragging an edge or a corner
+                    if (typeof dragCorner === 'string' && dragCorner.startsWith('edge-')) {
+                        // Dragging an edge - move both corners of that edge
+                        const edgeIndex = parseInt(dragCorner.split('-')[1]);
+                        const newCorners = [...startBounds.corners];
+                        
+                        // Calculate movement delta
+                        const startMidLat = (startBounds.corners[edgeIndex][0] + startBounds.corners[(edgeIndex + 1) % 4][0]) / 2;
+                        const startMidLng = (startBounds.corners[edgeIndex][1] + startBounds.corners[(edgeIndex + 1) % 4][1]) / 2;
+                        const latDiff = e.latlng.lat - startMidLat;
+                        const lngDiff = e.latlng.lng - startMidLng;
+                        
+                        // Move both corners of this edge
+                        newCorners[edgeIndex] = [
+                            startBounds.corners[edgeIndex][0] + latDiff,
+                            startBounds.corners[edgeIndex][1] + lngDiff
+                        ];
+                        newCorners[(edgeIndex + 1) % 4] = [
+                            startBounds.corners[(edgeIndex + 1) % 4][0] + latDiff,
+                            startBounds.corners[(edgeIndex + 1) % 4][1] + lngDiff
+                        ];
+                        
+                        boundingBox.setLatLngs(newCorners);
+                        
+                        // Recalculate base dimensions from new corners
+                        const bounds = boundingBox.getBounds();
+                        const center = bounds.getCenter();
+                        baseLatDiff = (bounds.getNorth() - bounds.getSouth()) / 2;
+                        baseLngDiff = (bounds.getEast() - bounds.getWest()) / 2;
+                        
+                        // Reset rotation when manually resizing
+                        rotationAngle = 0;
+                        
+                        // Show custom ratio indicator
+                        document.getElementById('customRatioBadge').classList.add('active');
+                    } else {
+                        // Dragging a corner - resize by moving that corner
+                        const newCorners = [...startBounds.corners];
+                        newCorners[dragCorner] = [e.latlng.lat, e.latlng.lng];
+                        
+                        boundingBox.setLatLngs(newCorners);
+                        
+                        // Recalculate base dimensions from new corners
+                        const bounds = boundingBox.getBounds();
+                        const center = bounds.getCenter();
+                        baseLatDiff = (bounds.getNorth() - bounds.getSouth()) / 2;
+                        baseLngDiff = (bounds.getEast() - bounds.getWest()) / 2;
+                        
+                        // Reset rotation when manually resizing
+                        rotationAngle = 0;
+                        
+                        // Show custom ratio indicator
+                        document.getElementById('customRatioBadge').classList.add('active');
+                    }
+                } else {
+                    // Move entire box
+                    const latDiff = e.latlng.lat - startLatLng.lat;
+                    const lngDiff = e.latlng.lng - startLatLng.lng;
+
+                    const newCorners = startBounds.corners.map(([lat, lng]) => [
+                        lat + latDiff,
+                        lng + lngDiff
+                    ]);
+
+                    boundingBox.setLatLngs(newCorners);
+                }
+
+                updateCorners();
+                updateBoundingBoxInfo();
+                
+                // Check if selection is square after dragging
+                if (dragCorner !== null) {
+                    checkIfSquare();
+                }
+            });
+
+            map.on('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragCorner = null;
+                    document.body.style.cursor = isDragModeEnabled ? 'grab' : 'default';
+                    updateBoundingBoxInfo();
+                }
+            });
+
+            // Update corners when bounds change
+            boundingBox.on('remove', () => {
+                corners.forEach(marker => map.removeLayer(marker));
+                edgeMarkers.forEach(marker => map.removeLayer(marker));
+            });
+        }
+
+        // Update bounding box info display
+        function updateBoundingBoxInfo() {
+            const bounds = boundingBox.getBounds();
+            const center = bounds.getCenter();
+            
+            // Update map info overlay
+            const coords = `
+                N: ${bounds.getNorth().toFixed(4)}<br>
+                S: ${bounds.getSouth().toFixed(4)}<br>
+                E: ${bounds.getEast().toFixed(4)}<br>
+                W: ${bounds.getWest().toFixed(4)}
+            `;
+            document.getElementById('bboxCoords').innerHTML = coords;
+
+            // Calculate dimensions in kilometers
+            const latDiff = bounds.getNorth() - bounds.getSouth();
+            const lngDiff = bounds.getEast() - bounds.getWest();
+            const heightKm = latDiff * 111.32;
+            const widthKm = lngDiff * 111.32 * Math.cos(center.lat * Math.PI / 180);
+            const area = heightKm * widthKm;
+            
+            // Convert to selected unit
+            const unit = document.getElementById('dimensionUnit').value;
+            const { width, height, unitLabel } = convertDimensions(widthKm, heightKm, unit);
+            
+            // Update map overlay
+            document.getElementById('bboxCoords').innerHTML = `
+                ${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}
+            `;
+            document.getElementById('centerInfo').textContent = `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`;
+            document.getElementById('dimensionsInfo').textContent = `${width.toFixed(2)} × ${height.toFixed(2)} ${unitLabel}`;
+            document.getElementById('rotationInfo').textContent = `${rotationAngle.toFixed(0)}°`;
+        }
+
+        // Convert dimensions to different units
+        function convertDimensions(widthKm, heightKm, unit) {
+            const conversions = {
+                km: { factor: 1, label: 'km' },
+                m: { factor: 1000, label: 'm' },
+                cm: { factor: 100000, label: 'cm' },
+                mm: { factor: 1000000, label: 'mm' },
+                mi: { factor: 0.621371, label: 'mi' },
+                ft: { factor: 3280.84, label: 'ft' },
+                in: { factor: 39370.1, label: 'in' }
+            };
+            
+            const conv = conversions[unit] || conversions.km;
+            
+            return {
+                width: widthKm * conv.factor,
+                height: heightKm * conv.factor,
+                unitLabel: conv.label
+            };
+        }
+
+        // Update dimensions when unit changes
+        document.getElementById('dimensionUnit').addEventListener('change', function() {
+            updateBoundingBoxInfo();
+        });
+
+        // Apply custom dimensions button
+        document.getElementById('applyDimensionsBtn').addEventListener('click', function() {
+            const width = parseFloat(document.getElementById('setWidth').value);
+            const height = parseFloat(document.getElementById('setHeight').value);
+            const unit = document.getElementById('dimensionUnit').value;
+            
+            if (!width || !height || width <= 0 || height <= 0) {
+                alert('Please enter valid width and height values.');
+                return;
+            }
+            
+            // Convert from selected unit to kilometers
+            const conversions = {
+                km: 1,
+                m: 0.001,
+                cm: 0.00001,
+                mm: 0.000001,
+                mi: 1.60934,
+                ft: 0.0003048,
+                in: 0.0000254
+            };
+            
+            const factor = conversions[unit] || 1;
+            const widthKm = width * factor;
+            const heightKm = height * factor;
+            
+            // Get current center
+            const bounds = boundingBox.getBounds();
+            const center = bounds.getCenter();
+            
+            // Calculate lat/lng differences accounting for Mercator projection
+            const latCorrection = Math.cos(center.lat * Math.PI / 180);
+            const latDiff = heightKm / 111.32;
+            const lngDiff = widthKm / (111.32 * latCorrection);
+            
+            // Create new corners
+            const newCorners = [
+                [center.lat - latDiff/2, center.lng - lngDiff/2],
+                [center.lat - latDiff/2, center.lng + lngDiff/2],
+                [center.lat + latDiff/2, center.lng + lngDiff/2],
+                [center.lat + latDiff/2, center.lng - lngDiff/2]
+            ];
+            
+            boundingBox.setLatLngs(newCorners);
+            
+            // Update base dimensions
+            baseLatDiff = latDiff / 2;
+            baseLngDiff = lngDiff / 2;
+            
+            // Reset rotation
+            rotationAngle = 0;
+            
+            updateCorners();
+            updateBoundingBoxInfo();
+        });
+
+        // Location search using Mapbox Geocoding API
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.trim();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (query.length < 3) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchLocation(query);
+            }, 500);
+        });
+
+        async function searchLocation(query) {
+            if (!query) return;
+            
+            try {
+                const response = await fetch(
+                    `/api/mapbox/geocoding?query=${encodeURIComponent(query)}`
+                );
+                const data = await response.json();
+                
+                displaySearchResults(data.features);
+            } catch (error) {
+                console.error('Search error:', error);
+                alert('Search failed. Please check console for details.');
+            }
+        }
+
+        function displaySearchResults(features) {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (features.length === 0) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+
+            resultsDiv.innerHTML = features.map(feature => `
+                <div class="search-result-item" onclick="selectLocation(${feature.center[1]}, ${feature.center[0]})">
+                    ${feature.place_name}
+                </div>
+            `).join('');
+            
+            resultsDiv.style.display = 'block';
+        }
+
+        function selectLocation(lat, lng) {
+            map.setView([lat, lng], 14);
+            
+            // Center bounding box on location
+            const bounds = boundingBox.getBounds();
+            const latDiff = (bounds.getNorth() - bounds.getSouth()) / 2;
+            const lngDiff = (bounds.getEast() - bounds.getWest()) / 2;
+            
+            // Calculate new corner positions
+            const newCorners = [
+                [lat - latDiff, lng - lngDiff],  // Southwest
+                [lat - latDiff, lng + lngDiff],  // Southeast
+                [lat + latDiff, lng + lngDiff],  // Northeast
+                [lat + latDiff, lng - lngDiff]   // Northwest
+            ];
+            
+            boundingBox.setLatLngs(newCorners);
+            
+            // Update base dimensions for rotation
+            baseLatDiff = latDiff;
+            baseLngDiff = lngDiff;
+            
+            updateCorners();
+            updateBoundingBoxInfo();
+            
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        // Lock selection toggle
+        document.getElementById('lockSelectionBtn').addEventListener('click', function(e) {
+            isSelectionLocked = !isSelectionLocked;
+            this.classList.toggle('active', isSelectionLocked);
+            this.textContent = isSelectionLocked ? '🔓' : '🔒';
+            // Update corner markers to show locked state
+            if (window.updateCorners) {
+                window.updateCorners();
+            }
+        });
+
+        // Lock zoom scaling toggle
+        document.getElementById('lockZoomBtn').addEventListener('click', function(e) {
+            isZoomLocked = !isZoomLocked;
+            this.classList.toggle('active', isZoomLocked);
+            this.style.background = isZoomLocked ? '#4a90e2' : '';
+        });
+
+        // Envelope Warp toggle button
+        document.getElementById('envelopeWarpBtn').addEventListener('click', function() {
+            currentEnvelopeWarp = (currentEnvelopeWarp + 1) % 5;
+            
+            const warpValueEl = document.getElementById('warpValue');
+            const button = document.getElementById('envelopeWarpBtn');
+            
+            if (currentEnvelopeWarp === 0) {
+                warpValueEl.textContent = 'Off';
+                button.classList.remove('active');
+            } else {
+                warpValueEl.textContent = '-' + currentEnvelopeWarp + '%';
+                button.classList.add('active');
+            }
+            
+            // Reprocess image if available
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Update threshold value and reprocess if image exists
+        document.getElementById('contrastThreshold').addEventListener('input', function(e) {
+            // Live reprocess if we have an image
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Aspect ratio change handler
+        // Check if current selection is square (accounting for Mercator projection)
+        function checkIfSquare() {
+            const bounds = boundingBox.getBounds();
+            const center = bounds.getCenter();
+            const latCorrection = Math.cos(center.lat * Math.PI / 180);
+            
+            const latDiff = bounds.getNorth() - bounds.getSouth();
+            const lngDiff = bounds.getEast() - bounds.getWest();
+            
+            // Calculate actual aspect ratio accounting for Mercator distortion
+            const adjustedLngDiff = lngDiff * latCorrection;
+            const ratio = adjustedLngDiff / latDiff;
+            
+            // Check if ratio is close to 1:1 (within 2% tolerance)
+            const isSquare = Math.abs(ratio - 1) < 0.02;
+            
+            const customBadge = document.getElementById('customRatioBadge');
+            const squareIndicator = document.getElementById('squareIndicator');
+            
+            if (isSquare) {
+                // Hide custom badge, show square indicator
+                customBadge.classList.remove('active');
+                squareIndicator.classList.add('active');
+            } else {
+                // Show custom badge, hide square indicator
+                customBadge.classList.add('active');
+                squareIndicator.classList.remove('active');
+            }
+        }
+
+        // Update actual size helper text
+        function updateActualSizeHelper() {
+            const baseSize = parseInt(document.getElementById('imageSize').value);
+            const aspectRatio = document.getElementById('aspectRatio').value;
+            const [ratioW, ratioH] = aspectRatio.split(':').map(Number);
+            const aspectValue = ratioW / ratioH;
+            
+            let width, height;
+            if (aspectValue >= 1) {
+                width = baseSize;
+                height = Math.round(baseSize / aspectValue);
+            } else {
+                height = baseSize;
+                width = Math.round(baseSize * aspectValue);
+            }
+            
+            document.getElementById('actualSizeHelper').textContent = `${width}×${height}`;
+        }
+
+        document.getElementById('aspectRatio').addEventListener('change', function(e) {
+            updateBoundingBoxAspectRatio(e.target.value);
+            // Hide both badges when preset is selected
+            document.getElementById('customRatioBadge').classList.remove('active');
+            document.getElementById('squareIndicator').classList.remove('active');
+            // Update size helper
+            updateActualSizeHelper();
+        });
+
+        // Update size helper when size changes
+        document.getElementById('imageSize').addEventListener('change', updateActualSizeHelper);
+
+        // Initialize size helper
+        updateActualSizeHelper();
+
+        function updateBoundingBoxAspectRatio(ratio) {
+            const [width, height] = ratio.split(':').map(Number);
+            const aspectRatio = width / height;
+            
+            const bounds = boundingBox.getBounds();
+            const center = bounds.getCenter();
+            
+            // Account for latitude distortion (Mercator projection)
+            const latCorrection = Math.cos(center.lat * Math.PI / 180);
+            
+            // Get current dimensions
+            const currentLatDiff = bounds.getNorth() - bounds.getSouth();
+            const currentLngDiff = bounds.getEast() - bounds.getWest();
+            
+            // Calculate new dimensions maintaining area roughly
+            let newLatDiff, newLngDiff;
+            
+            if (aspectRatio >= 1) {
+                // Wider than tall
+                newLatDiff = Math.sqrt((currentLatDiff * currentLngDiff * latCorrection) / aspectRatio);
+                newLngDiff = (newLatDiff * aspectRatio) / latCorrection;
+            } else {
+                // Taller than wide
+                newLatDiff = Math.sqrt((currentLatDiff * currentLngDiff * latCorrection) * aspectRatio);
+                newLngDiff = (newLatDiff / aspectRatio) / latCorrection;
+            }
+            
+            // Update base dimensions for rotation
+            baseLatDiff = newLatDiff / 2;
+            baseLngDiff = newLngDiff / 2;
+            
+            // Reset rotation to 0 when changing aspect ratio
+            rotationAngle = 0;
+            
+            // Create new corners
+            const newCorners = [
+                [center.lat + baseLatDiff, center.lng - baseLngDiff], // NW
+                [center.lat + baseLatDiff, center.lng + baseLngDiff], // NE
+                [center.lat - baseLatDiff, center.lng + baseLngDiff], // SE
+                [center.lat - baseLatDiff, center.lng - baseLngDiff]  // SW
+            ];
+            
+            boundingBox.setLatLngs(newCorners);
+            
+            // Update corner markers to match new corners
+            if (window.updateCorners) {
+                window.updateCorners();
+            }
+            
+            updateBoundingBoxInfo();
+        }
+
+        // Lazer mode button toggle
+        document.getElementById('lineArtBtn').addEventListener('click', function() {
+            lazerMode = !lazerMode;
+            this.classList.toggle('active', lazerMode);
+            this.style.background = lazerMode ? '#4a90e2' : '';
+            
+            // Disable edge detection and invert when lazer is active
+            if (lazerMode) {
+                edgeDetectionEnabled = false;
+                invertColorsEnabled = false;
+                document.getElementById('edgeDetectionBtn').classList.remove('active');
+                document.getElementById('edgeDetectionBtn').style.background = '';
+                document.getElementById('invertColorsBtn').classList.remove('active');
+                document.getElementById('invertColorsBtn').style.background = '';
+            }
+            
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+        
+        // Edge detection button toggle
+        document.getElementById('edgeDetectionBtn').addEventListener('click', function() {
+            edgeDetectionEnabled = !edgeDetectionEnabled;
+            this.classList.toggle('active', edgeDetectionEnabled);
+            this.style.background = edgeDetectionEnabled ? '#4a90e2' : '';
+            
+            // Disable lazer when edge detection is active
+            if (edgeDetectionEnabled) {
+                lazerMode = false;
+                document.getElementById('lineArtBtn').classList.remove('active');
+                document.getElementById('lineArtBtn').style.background = '';
+            }
+            
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Invert colors button toggle
+        document.getElementById('invertColorsBtn').addEventListener('click', function() {
+            invertColorsEnabled = !invertColorsEnabled;
+            this.classList.toggle('active', invertColorsEnabled);
+            this.style.background = invertColorsEnabled ? '#4a90e2' : '';
+            
+            // Disable lazer when invert is active
+            if (invertColorsEnabled) {
+                lazerMode = false;
+                document.getElementById('lineArtBtn').classList.remove('active');
+                document.getElementById('lineArtBtn').style.background = '';
+            }
+            
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Generate engraving image
+        document.getElementById('generateBtn').addEventListener('click', async function() {
+            // Get parameters
+            const bounds = boundingBox.getBounds();
+            // Use 'lazer' style when lazer mode is active, otherwise use selected style
+            const style = lazerMode ? 'lazer' : document.getElementById('mapStyle').value;
+            const baseSize = parseInt(document.getElementById('imageSize').value);
+            const aspectRatio = document.getElementById('aspectRatio').value;
+            
+            // Calculate width and height based on aspect ratio
+            const [ratioW, ratioH] = aspectRatio.split(':').map(Number);
+            const aspectValue = ratioW / ratioH;
+            
+            let width, height;
+            if (aspectValue >= 1) {
+                // Landscape or square - base size is width
+                width = baseSize;
+                height = Math.round(baseSize / aspectValue);
+            } else {
+                // Portrait - base size is height
+                height = baseSize;
+                width = Math.round(baseSize * aspectValue);
+            }
+            
+            // Build Mapbox Static Images API URL
+            const bbox = [
+                bounds.getWest(),
+                bounds.getSouth(),
+                bounds.getEast(),
+                bounds.getNorth()
+            ].join(',');
+            
+            // Mapbox Static Images API limits:
+            // Standard: max 1280x1280
+            // Retina (@2x): max 1280x1280 (returns 2560x2560)
+            // Minimum: 1x1
+            let apiWidth = width;
+            let apiHeight = height;
+            let useRetina = false;
+            
+            // Check if we need retina and ensure we stay within limits
+            const maxDimension = Math.max(width, height);
+            
+            if (maxDimension > 1280) {
+                // Use @2x for larger sizes
+                const scale = 1280 / maxDimension;
+                apiWidth = Math.max(1, Math.floor(width * scale));
+                apiHeight = Math.max(1, Math.floor(height * scale));
+                useRetina = true;
+            } else {
+                // Standard resolution
+                apiWidth = Math.max(1, width);
+                apiHeight = Math.max(1, height);
+                useRetina = false;
+            }
+            
+            console.log(`Requesting ${apiWidth}x${apiHeight}${useRetina ? '@2x' : ''} (output: ${useRetina ? apiWidth*2 : apiWidth}x${useRetina ? apiHeight*2 : apiHeight})`);
+            
+            const url = `/api/mapbox/static?style=${style}&bbox=${bbox}&width=${apiWidth}&height=${apiHeight}&retina=${useRetina}`;
+            
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            try {
+                console.log('Fetching image from:', url);
+                
+                // Fetch as blob to avoid CORS taint
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error:', errorText);
+                    throw new Error(`Failed to fetch map image (status: ${response.status}). Check your API token and try again.\n\nNote: Mapbox free tier has size limits. Try a smaller output size or check your API token.`);
+                }
+                
+                const blob = await response.blob();
+                console.log('Blob received:', blob.size, 'bytes');
+                
+                // Create object URL from blob
+                const objectURL = URL.createObjectURL(blob);
+                
+                const img = new Image();
+                
+                img.onload = function() {
+                    console.log('Image loaded successfully:', img.width, 'x', img.height);
+                    
+                    // Store original image for live reprocessing
+                    originalImageElement = img;
+                    
+                    // Process it
+                    setTimeout(() => {
+                        try {
+                            processImage(img);
+                            // Clean up object URL after processing
+                            URL.revokeObjectURL(objectURL);
+                        } catch (err) {
+                            console.error('Processing error:', err);
+                            alert('Image loaded but processing failed: ' + err.message);
+                            // Keep the raw image visible
+                            processedImageData = objectURL;
+                            document.getElementById('downloadBtn').disabled = false;
+                        }
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                    }, 100);
+                };
+                
+                img.onerror = function() {
+                    console.error('Image failed to load from blob');
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    alert('Failed to load the image into canvas.');
+                };
+                
+                img.src = objectURL;
+                
+            } catch (error) {
+                console.error('Generation error:', error);
+                alert(error.message);
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        });
+
+        // Process image for engraving
+        function processImage(img) {
+            console.log('Starting image processing...', img.width, img.height);
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            console.log('Canvas created:', canvas.width, canvas.height);
+            
+            // Draw image
+            ctx.drawImage(img, 0, 0);
+            console.log('Image drawn to canvas');
+            
+            // Get image data
+            let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let data = imageData.data;
+            console.log('Image data extracted:', data.length, 'values');
+            
+            // Get settings
+            const threshold = parseInt(document.getElementById('contrastThreshold').value);
+            const edgeDetection = edgeDetectionEnabled;
+            const invert = invertColorsEnabled;
+            
+            console.log('Processing with threshold:', threshold, 'edge:', edgeDetection, 'invert:', invert);
+            
+            // Lazer mode: uses dark map style, just apply threshold
+            if (lazerMode) {
+                console.log('Lazer mode: simple threshold on dark map style');
+                
+                // Convert to grayscale and apply threshold
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                    // Use standard threshold
+                    const value = gray > threshold ? 255 : 0;
+                    data[i] = value;
+                    data[i + 1] = value;
+                    data[i + 2] = value;
+                }
+            } else {
+                // Convert to grayscale and apply threshold
+                for (let i = 0; i < data.length; i += 4) {
+                    // Grayscale conversion
+                    const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                    
+                    // Apply threshold
+                    const value = gray > threshold ? 255 : 0;
+                    
+                    data[i] = value;     // Red
+                    data[i + 1] = value; // Green
+                    data[i + 2] = value; // Blue
+                }
+            }
+            
+            console.log('Threshold applied');
+            
+            // If invert is enabled (but not in lazer mode which handles its own inversion)
+            if (invert && !lazerMode) {
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = 255 - data[i];
+                    data[i + 1] = 255 - data[i + 1];
+                    data[i + 2] = 255 - data[i + 2];
+                }
+            }
+            
+            // Apply envelope warp if enabled
+            if (currentEnvelopeWarp > 0) {
+                console.log('Applying envelope warp:', currentEnvelopeWarp + '%');
+                ctx.putImageData(imageData, 0, 0);
+                const warpedCanvas = applyEnvelopeWarp(canvas, currentEnvelopeWarp);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(warpedCanvas, 0, 0);
+                imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            }
+            
+            // Apply edge detection if enabled (but not if lazer mode is already active)
+            if (edgeDetection && !lazerMode) {
+                console.log('Applying edge detection...');
+                imageData = applyEdgeDetection(imageData);
+            }
+            
+            // Put processed data back
+            ctx.putImageData(imageData, 0, 0);
+            console.log('Data put back to canvas');
+            
+            // Convert to data URL for download
+            processedImageData = canvas.toDataURL('image/png');
+            console.log('Converted to data URL, length:', processedImageData.length);
+            
+            // Show preview using canvas directly
+            const previewCanvas = document.getElementById('previewCanvas');
+            const previewCtx = previewCanvas.getContext('2d');
+            
+            // Set canvas dimensions to match processed image
+            previewCanvas.width = canvas.width;
+            previewCanvas.height = canvas.height;
+            
+            // Copy the processed image to preview canvas
+            previewCtx.drawImage(canvas, 0, 0);
+            
+            // Show the canvas
+            previewCanvas.style.display = 'block';
+            
+            // Enable buttons
+            document.getElementById('downloadBtn').disabled = false;
+            document.getElementById('openPreviewBtn').disabled = false;
+            
+            // Flash preview button to draw attention
+            const previewBtn = document.getElementById('openPreviewBtn');
+            previewBtn.classList.add('flash');
+            setTimeout(() => previewBtn.classList.remove('flash'), 1800);
+            
+            document.getElementById('loadingOverlay').style.display = 'none';
+            
+            console.log('Processing complete!');
+        }
+
+        // Simple edge detection (Sobel operator)
+        function applyEdgeDetection(imageData) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = imageData.width;
+            canvas.height = imageData.height;
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const dst = ctx.createImageData(canvas.width, canvas.height);
+            
+            const sobelX = [
+                [-1, 0, 1],
+                [-2, 0, 2],
+                [-1, 0, 1]
+            ];
+            
+            const sobelY = [
+                [-1, -2, -1],
+                [0, 0, 0],
+                [1, 2, 1]
+            ];
+            
+            for (let y = 1; y < canvas.height - 1; y++) {
+                for (let x = 1; x < canvas.width - 1; x++) {
+                    let pixelX = 0;
+                    let pixelY = 0;
+                    
+                    for (let ky = -1; ky <= 1; ky++) {
+                        for (let kx = -1; kx <= 1; kx++) {
+                            const idx = ((y + ky) * canvas.width + (x + kx)) * 4;
+                            const gray = src.data[idx];
+                            pixelX += gray * sobelX[ky + 1][kx + 1];
+                            pixelY += gray * sobelY[ky + 1][kx + 1];
+                        }
+                    }
+                    
+                    const magnitude = Math.sqrt(pixelX * pixelX + pixelY * pixelY);
+                    const idx = (y * canvas.width + x) * 4;
+                    const value = magnitude > 50 ? 0 : 255;
+                    
+                    dst.data[idx] = value;
+                    dst.data[idx + 1] = value;
+                    dst.data[idx + 2] = value;
+                    dst.data[idx + 3] = 255;
+                }
+            }
+            
+            return dst;
+        }
+
+        // Apply envelope warp (barrel distortion) to compensate for engraving curvature
+        function applyEnvelopeWarp(sourceCanvas, warpLevel) {
+            const warpCanvas = document.createElement('canvas');
+            const warpCtx = warpCanvas.getContext('2d');
+            
+            warpCanvas.width = sourceCanvas.width;
+            warpCanvas.height = sourceCanvas.height;
+            
+            const sourceData = sourceCanvas.getContext('2d').getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+            const destData = warpCtx.createImageData(sourceCanvas.width, sourceCanvas.height);
+            
+            const width = sourceCanvas.width;
+            const height = sourceCanvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            // Warp strength: -1% to -4% creates barrel distortion (negative pincushion)
+            const strength = -warpLevel * 0.01;
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    // Normalize coordinates to -1 to 1
+                    const normX = (x - centerX) / centerX;
+                    const normY = (y - centerY) / centerY;
+                    
+                    // Calculate distance from center
+                    const distance = Math.sqrt(normX * normX + normY * normY);
+                    
+                    // Apply barrel distortion formula
+                    const distortionFactor = 1 + strength * distance * distance;
+                    
+                    // Calculate source coordinates
+                    const srcX = centerX + normX * centerX * distortionFactor;
+                    const srcY = centerY + normY * centerY * distortionFactor;
+                    
+                    // Bilinear interpolation for smooth results
+                    if (srcX >= 0 && srcX < width - 1 && srcY >= 0 && srcY < height - 1) {
+                        const x0 = Math.floor(srcX);
+                        const x1 = x0 + 1;
+                        const y0 = Math.floor(srcY);
+                        const y1 = y0 + 1;
+                        
+                        const fx = srcX - x0;
+                        const fy = srcY - y0;
+                        
+                        const destIndex = (y * width + x) * 4;
+                        
+                        for (let c = 0; c < 4; c++) {
+                            const i00 = (y0 * width + x0) * 4 + c;
+                            const i10 = (y0 * width + x1) * 4 + c;
+                            const i01 = (y1 * width + x0) * 4 + c;
+                            const i11 = (y1 * width + x1) * 4 + c;
+                            
+                            const v0 = sourceData.data[i00] * (1 - fx) + sourceData.data[i10] * fx;
+                            const v1 = sourceData.data[i01] * (1 - fx) + sourceData.data[i11] * fx;
+                            
+                            destData.data[destIndex + c] = v0 * (1 - fy) + v1 * fy;
+                        }
+                    } else {
+                        // Fill with white for out-of-bounds
+                        const destIndex = (y * width + x) * 4;
+                        destData.data[destIndex] = 255;
+                        destData.data[destIndex + 1] = 255;
+                        destData.data[destIndex + 2] = 255;
+                        destData.data[destIndex + 3] = 255;
+                    }
+                }
+            }
+            
+            warpCtx.putImageData(destData, 0, 0);
+            return warpCanvas;
+        }
+
+        // Download image
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            if (!processedImageData) return;
+            
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            link.download = `map-engraving-${timestamp}.png`;
+            link.href = processedImageData;
+            link.click();
+        });
+
+        // Modal Controls
+        document.getElementById('openPreviewBtn').addEventListener('click', function() {
+            if (!originalImageElement) return;
+            
+            // Reset zoom and pan
+            previewZoom = 1;
+            previewPanX = 0;
+            previewPanY = 0;
+            document.getElementById('zoomLevel').textContent = '100%';
+            
+            // Sync settings to modal
+            document.getElementById('modalContrastThreshold').value = document.getElementById('contrastThreshold').value;
+            document.getElementById('modalContrastThresholdInput').value = document.getElementById('contrastThreshold').value;
+            document.getElementById('modalThresholdValue').textContent = document.getElementById('contrastThreshold').value;
+            document.getElementById('modalEdgeDetection').checked = edgeDetectionEnabled;
+            document.getElementById('modalInvertColors').checked = invertColorsEnabled;
+            document.getElementById('modalImageSize').value = document.getElementById('imageSize').value;
+            document.getElementById('modalAspectRatio').value = document.getElementById('aspectRatio').value;
+            
+            // Copy selection info from map overlay
+            const centerText = document.getElementById('centerInfo').textContent;
+            const dimensionsText = document.getElementById('dimensionsInfo').textContent;
+            document.getElementById('modalSelectionInfo').innerHTML = `
+                <strong>Center:</strong> ${centerText}<br>
+                <strong>Dimensions:</strong> ${dimensionsText}
+            `;
+            
+            // Process image in modal
+            processImageForModal(originalImageElement);
+            
+            // Show modal
+            document.getElementById('previewModal').classList.add('active');
+        });
+
+        // Preview zoom controls
+        document.getElementById('zoomIn').addEventListener('click', function() {
+            previewZoom = Math.min(previewZoom + 0.25, 5);
+            document.getElementById('zoomLevel').textContent = Math.round(previewZoom * 100) + '%';
+            redrawModalPreview();
+        });
+        
+        document.getElementById('zoomOut').addEventListener('click', function() {
+            previewZoom = Math.max(previewZoom - 0.25, 0.25);
+            document.getElementById('zoomLevel').textContent = Math.round(previewZoom * 100) + '%';
+            redrawModalPreview();
+        });
+        
+        document.getElementById('zoomReset').addEventListener('click', function() {
+            previewZoom = 1;
+            previewPanX = 0;
+            previewPanY = 0;
+            document.getElementById('zoomLevel').textContent = '100%';
+            redrawModalPreview();
+        });
+        
+        // Scroll wheel zoom
+        const modalCanvas = document.getElementById('modalPreviewCanvas');
+        modalCanvas.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            previewZoom = Math.max(0.25, Math.min(5, previewZoom + delta));
+            document.getElementById('zoomLevel').textContent = Math.round(previewZoom * 100) + '%';
+            redrawModalPreview();
+        });
+        
+        // Pan with mouse drag
+        modalCanvas.addEventListener('mousedown', function(e) {
+            isPanning = true;
+            panStartX = e.clientX - previewPanX;
+            panStartY = e.clientY - previewPanY;
+        });
+        
+        modalCanvas.addEventListener('mousemove', function(e) {
+            if (isPanning) {
+                previewPanX = e.clientX - panStartX;
+                previewPanY = e.clientY - panStartY;
+                redrawModalPreview();
+            }
+        });
+        
+        modalCanvas.addEventListener('mouseup', function() {
+            isPanning = false;
+        });
+        
+        modalCanvas.addEventListener('mouseleave', function() {
+            isPanning = false;
+        });
+        
+        // Redraw modal preview with zoom and pan
+        function redrawModalPreview() {
+            if (!previewBaseImage) return;
+            
+            const canvas = document.getElementById('modalPreviewCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            
+            // Apply pan and zoom
+            ctx.translate(previewPanX + canvas.width / 2, previewPanY + canvas.height / 2);
+            ctx.scale(previewZoom, previewZoom);
+            ctx.translate(-canvas.width / 2, -canvas.height / 2);
+            
+            ctx.drawImage(previewBaseImage, 0, 0);
+            ctx.restore();
+        }
+
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('previewModal').classList.remove('active');
+        });
+
+        // Close modal on outside click
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        // Modal control listeners with live preview
+        document.getElementById('modalContrastThreshold').addEventListener('input', function(e) {
+            const value = e.target.value;
+            document.getElementById('modalThresholdValue').textContent = value;
+            document.getElementById('modalContrastThresholdInput').value = value;
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
+        // Sync manual modal threshold input with slider
+        document.getElementById('modalContrastThresholdInput').addEventListener('input', function(e) {
+            const value = Math.max(0, Math.min(255, parseInt(e.target.value) || 0));
+            document.getElementById('modalContrastThreshold').value = value;
+            document.getElementById('modalThresholdValue').textContent = value;
+            this.value = value;
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
+        document.getElementById('modalEdgeDetection').addEventListener('change', function() {
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
+        document.getElementById('modalInvertColors').addEventListener('change', function() {
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
+        // Modal aspect ratio change - sync to main and regenerate
+        document.getElementById('modalAspectRatio').addEventListener('change', function(e) {
+            const newRatio = e.target.value;
+            document.getElementById('aspectRatio').value = newRatio;
+            updateBoundingBoxAspectRatio(newRatio);
+            // Regenerate with new aspect ratio
+            generateImage();
+        });
+
+        // Modal image size change - sync to main and regenerate
+        document.getElementById('modalImageSize').addEventListener('change', function(e) {
+            const newSize = e.target.value;
+            document.getElementById('imageSize').value = newSize;
+            // Regenerate with new size
+            generateImage();
+        });
+
+        // Process image for modal canvas
+        function processImageForModal(img) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let data = imageData.data;
+            
+            // Get modal settings
+            const threshold = parseInt(document.getElementById('modalContrastThreshold').value);
+            const edgeDetection = document.getElementById('modalEdgeDetection').checked;
+            const invert = document.getElementById('modalInvertColors').checked;
+            
+            // Convert to grayscale and apply threshold
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                const value = gray > threshold ? 255 : 0;
+                
+                data[i] = value;
+                data[i + 1] = value;
+                data[i + 2] = value;
+            }
+            
+            // If invert is enabled, simply invert colors
+            if (invert) {
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = 255 - data[i];
+                    data[i + 1] = 255 - data[i + 1];
+                    data[i + 2] = 255 - data[i + 2];
+                }
+            }
+            
+            if (edgeDetection) {
+                imageData = applyEdgeDetection(imageData);
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Store processed canvas as base image for zoom/pan
+            previewBaseImage = canvas;
+            
+            // Update modal preview
+            const modalCanvas = document.getElementById('modalPreviewCanvas');
+            const modalCtx = modalCanvas.getContext('2d');
+            
+            modalCanvas.width = canvas.width;
+            modalCanvas.height = canvas.height;
+            
+            // Initial draw with zoom/pan applied
+            redrawModalPreview();
+            
+            // Update processedImageData for download
+            processedImageData = canvas.toDataURL('image/png');
+        }
+
+        // Modal download button
+        document.getElementById('modalDownloadBtn').addEventListener('click', function() {
+            if (!processedImageData) return;
+            
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            link.download = `map-engraving-${timestamp}.png`;
+            link.href = processedImageData;
+            link.click();
+        });
+
+        // Initialize app
+        initMap();
+    </script>
+</body>
+</html>
