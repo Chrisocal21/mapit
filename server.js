@@ -29,8 +29,9 @@ app.get('/api/mapbox/static', async (req, res) => {
         const imgWidth = width || size;
         const imgHeight = height || size;
         
-        // Use dark-v11 style for lazer mode (has black features on darker background)
-        const mapStyle = style === 'lazer' ? 'dark-v11' : style;
+        // For laser mode, use streets-v12 (has best detail for engraving)
+        // We'll process it client-side to get pure black/white
+        const mapStyle = style === 'laser' ? 'streets-v12' : style;
         
         const retinaParam = retina === 'true' ? '@2x' : '';
         const url = `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/static/[${bbox}]/${imgWidth}x${imgHeight}${retinaParam}?access_token=${process.env.MAPBOX_TOKEN}`;
