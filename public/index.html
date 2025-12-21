@@ -686,6 +686,75 @@
             transform: scale(1.1);
         }
 
+        /* AI Features Styling */
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-suggestion {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 3px solid #667eea;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .ai-suggestion strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .ai-loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        #aiButton {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        #aiButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        #aiButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ai-description {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
         /* Large Preview Modal */
         .preview-modal {
             position: fixed;
@@ -1253,6 +1322,13 @@
 
                     <!-- Primary Actions (Always Visible) -->
                     <div style="display: flex; gap: 0.5rem; align-items: center; margin-left: auto;">
+                        <button type="button" class="toolbar-button" id="aiButton" title="AI Assistant" style="padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                            <span class="ai-badge">AI</span>
+                        </button>
                         <button type="button" class="menu-button" id="helpBtn" title="Help & Instructions" style="padding: 0.5rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
@@ -1386,6 +1462,14 @@
                         <input type="checkbox" id="whiteWaterCheck" />
                         <label for="whiteWaterCheck">White Water</label>
                     </div>
+                    <div class="control-group checkbox-group">
+                        <input type="checkbox" id="thickenTextCheck" />
+                        <label for="thickenTextCheck">Thicken Text & Lines <span class="toolbar-badge orange">NEW</span></label>
+                    </div>
+                    <div class="control-group" id="thickenAmountControl" style="display: none; margin-left: 1.5rem;">
+                        <label for="thickenAmount">Thickness: <span id="thickenAmountValue">2</span>px</label>
+                        <input type="range" id="thickenAmount" min="0.5" max="5" step="0.5" value="2" style="width: 100%;" />
+                    </div>
                 </div>
 
                 <div class="modal-control-section">
@@ -1393,6 +1477,9 @@
                     <div class="info-display" id="modalSelectionInfo">
                         <strong>Center:</strong> --<br>
                         <strong>Area:</strong> --
+                    </div>
+                    <div id="aiDescriptionContainer" style="display: none;">
+                        <div class="ai-description" id="aiDescription"></div>
                     </div>
                 </div>
 
@@ -2237,6 +2324,158 @@
             }
         });
 
+        // AI-Enhanced Search
+        let aiSearchEnabled = true;
+        async function enhanceSearchWithAI(query) {
+            if (!aiSearchEnabled) return null;
+            
+            try {
+                const response = await fetch('/api/ai/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                if (!response.ok) {
+                    aiSearchEnabled = false; // Disable if API not configured
+                    return null;
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.log('AI search unavailable:', error.message);
+                aiSearchEnabled = false;
+                return null;
+            }
+        }
+
+        // AI Assistant Button
+        document.getElementById('aiButton').addEventListener('click', async function() {
+            const btn = this;
+            const originalHTML = btn.innerHTML;
+            
+            // Ask user what they need the map for
+            const purpose = prompt(
+                '🤖 What do you need this map for?\n\n' +
+                'Examples:\n' +
+                '• "wall art"\n' +
+                '• "laser engraving"\n' +
+                '• "printing a poster"\n' +
+                '• "trail planning"\n' +
+                '• "city planning"\n' +
+                '• "presentation"\n\n' +
+                'Enter your purpose:'
+            );
+            
+            if (!purpose || purpose.trim() === '') {
+                return; // User cancelled
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '<div class="ai-loading"></div> <span class="ai-badge">AI</span>';
+            
+            try {
+                const bounds = boundingBox.getBounds();
+                const center = bounds.getCenter();
+                const style = document.getElementById('mapStyle').value;
+                const size = document.getElementById('imageSize').value;
+                
+                // Get AI optimization suggestions
+                const response = await fetch('/api/ai/suggest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        location: `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`,
+                        style: style,
+                        dimensions: `${size}x${size}`,
+                        purpose: purpose.trim()
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Show suggestions and ask to apply
+                    let message = `🤖 AI Recommendations for "${purpose}":\n\n`;
+                    message += `📍 Style: ${data.suggestedStyle}\n`;
+                    message += `📐 Size: ${data.suggestedDimensions}\n\n`;
+                    message += `💡 ${data.reasoning}\n\n`;
+                    message += `✨ Tips:\n${data.tips.map(tip => `  • ${tip}`).join('\n')}\n\n`;
+                    message += `Apply these settings now?`;
+                    
+                    if (confirm(message)) {
+                        // Apply the suggestions
+                        document.getElementById('mapStyle').value = data.suggestedStyle;
+                        
+                        // Parse dimensions (e.g., "2560x2560" or "2560x1920")
+                        const [width, height] = data.suggestedDimensions.split('x').map(s => s.trim());
+                        if (width && height) {
+                            document.getElementById('imageSize').value = Math.max(parseInt(width), parseInt(height));
+                            
+                            // Set aspect ratio if not square
+                            if (width !== height) {
+                                const ratio = `${width}:${height}`;
+                                const ratioSelect = document.getElementById('aspectRatio');
+                                // Check if this ratio exists in the dropdown
+                                const options = Array.from(ratioSelect.options).map(opt => opt.value);
+                                if (options.includes(ratio)) {
+                                    ratioSelect.value = ratio;
+                                }
+                            }
+                        }
+                        
+                        // Show what was changed
+                        alert(`✅ Settings Applied!\n\nStyle: ${data.suggestedStyle}\nSize: ${data.suggestedDimensions}\n\nClick "Generate" to create your map.`);
+                        
+                        // Flash the Generate button to draw attention
+                        const generateBtn = document.getElementById('generateBtn');
+                        generateBtn.classList.add('flash');
+                        setTimeout(() => generateBtn.classList.remove('flash'), 1800);
+                    }
+                } else {
+                    alert('AI assistant is not configured. Add your OpenAI API key to .env file.');
+                }
+            } catch (error) {
+                console.error('AI error:', error);
+                alert('AI assistant unavailable. Check console for details.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        });
+
+        // AI Map Description (called when preview opens)
+        async function getAIDescription() {
+            try {
+                const bounds = boundingBox.getBounds();
+                const center = bounds.getCenter();
+                const style = document.getElementById('mapStyle').value;
+                const size = document.getElementById('imageSize').value;
+                const bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
+                
+                const response = await fetch('/api/ai/describe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        location: `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`,
+                        bbox: bbox,
+                        style: style,
+                        dimensions: `${size}x${size}`
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const container = document.getElementById('aiDescriptionContainer');
+                    const descElement = document.getElementById('aiDescription');
+                    descElement.innerHTML = `<strong>🤖 AI Analysis:</strong><br>${data.description}`;
+                    container.style.display = 'block';
+                }
+            } catch (error) {
+                console.log('AI description unavailable:', error.message);
+            }
+        }
+
         // Lock selection toggle
         document.getElementById('lockSelectionBtn').addEventListener('click', function(e) {
             isSelectionLocked = !isSelectionLocked;
@@ -2849,6 +3088,107 @@
             console.log('Processing complete!');
         }
 
+        // Apply morphological dilation to thicken black features (text, lines)
+        function applyDilation(imageData, width, height, iterations) {
+            const data = imageData.data;
+            const result = new Uint8ClampedArray(data);
+            
+            // Handle fractional iterations by doing full iterations + weighted blend
+            const fullIterations = Math.floor(iterations);
+            const fraction = iterations - fullIterations;
+            
+            // Perform full dilation iterations
+            for (let iter = 0; iter < fullIterations; iter++) {
+                const temp = new Uint8ClampedArray(result);
+                
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        // Check if any neighbor is black (0)
+                        let hasBlackNeighbor = false;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                                if (temp[nIdx] === 0) {
+                                    hasBlackNeighbor = true;
+                                    break;
+                                }
+                            }
+                            if (hasBlackNeighbor) break;
+                        }
+                        
+                        // If any neighbor is black, make this pixel black
+                        if (hasBlackNeighbor) {
+                            result[idx] = 0;
+                            result[idx + 1] = 0;
+                            result[idx + 2] = 0;
+                        }
+                    }
+                }
+            }
+            
+            // If there's a fractional part, apply partial dilation deterministically
+            if (fraction > 0) {
+                const temp = new Uint8ClampedArray(result);
+                const partialResult = new Uint8ClampedArray(result);
+                
+                // Do one more full dilation
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        let hasBlackNeighbor = false;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                                if (temp[nIdx] === 0) {
+                                    hasBlackNeighbor = true;
+                                    break;
+                                }
+                            }
+                            if (hasBlackNeighbor) break;
+                        }
+                        
+                        if (hasBlackNeighbor) {
+                            partialResult[idx] = 0;
+                            partialResult[idx + 1] = 0;
+                            partialResult[idx + 2] = 0;
+                        }
+                    }
+                }
+                
+                // Deterministically blend based on pixel position and fraction
+                // Use checkerboard pattern for 0.5, and denser patterns for other fractions
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        // Only process pixels that would change in the next iteration
+                        if (result[idx] === 255 && partialResult[idx] === 0) {
+                            // Use deterministic pattern based on coordinates
+                            // This creates a consistent dithering pattern
+                            const pattern = ((x % 2) + (y % 2) * 2); // 0, 1, 2, 3 pattern
+                            const threshold = pattern / 4; // 0, 0.25, 0.5, 0.75
+                            
+                            if (fraction > threshold) {
+                                result[idx] = 0;
+                                result[idx + 1] = 0;
+                                result[idx + 2] = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Copy result back to imageData
+            for (let i = 0; i < data.length; i++) {
+                data[i] = result[i];
+            }
+            
+            return imageData;
+        }
+
         // Simple edge detection (Sobel operator)
         function applyEdgeDetection(imageData) {
             const canvas = document.createElement('canvas');
@@ -3012,6 +3352,9 @@
                 <strong>Dimensions:</strong> ${dimensionsText}
             `;
             
+            // Get AI description
+            getAIDescription();
+            
             // Process image in modal
             processImageForModal(originalImageElement);
             
@@ -3142,6 +3485,23 @@
             }
         });
 
+        // Thicken text checkbox and slider
+        document.getElementById('thickenTextCheck').addEventListener('change', function() {
+            const isChecked = this.checked;
+            document.getElementById('thickenAmountControl').style.display = isChecked ? 'block' : 'none';
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
+        document.getElementById('thickenAmount').addEventListener('input', function(e) {
+            const value = e.target.value;
+            document.getElementById('thickenAmountValue').textContent = value;
+            if (originalImageElement) {
+                processImageForModal(originalImageElement);
+            }
+        });
+
         // Modal aspect ratio change - sync to main and regenerate
         document.getElementById('modalAspectRatio').addEventListener('change', function(e) {
             const newRatio = e.target.value;
@@ -3176,6 +3536,8 @@
             const edgeDetection = document.getElementById('modalEdgeDetection').checked;
             const invert = document.getElementById('modalInvertColors').checked;
             const blackText = document.getElementById('modalBlackText').checked;
+            const thickenText = document.getElementById('thickenTextCheck').checked;
+            const thickenAmount = parseFloat(document.getElementById('thickenAmount').value);
             
             // Store text mask if black text is enabled and invert is on
             let textMask = null;
@@ -3253,6 +3615,12 @@
                         }
                     }
                 }
+            }
+            
+            // Apply thickening (morphological dilation) if enabled
+            if (thickenText) {
+                imageData = applyDilation(imageData, canvas.width, canvas.height, thickenAmount);
+                data = imageData.data;
             }
             
             if (edgeDetection) {
