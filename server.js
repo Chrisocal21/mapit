@@ -89,6 +89,12 @@ app.get('/api/mapbox/geocoding', async (req, res) => {
     }
 });
 
+// Catch-all route to serve index.html for any non-API routes
+// This prevents 404 errors when refreshing or navigating
+app.get('*', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log('Mapbox token configured:', !!process.env.MAPBOX_TOKEN);
