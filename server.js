@@ -2,6 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const OpenAI = require('openai');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -15,7 +16,7 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check endpoint (for monitoring & deployment verification)
 app.get('/health', (req, res) => {
