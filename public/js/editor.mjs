@@ -1,5 +1,5 @@
 // Editor Page JavaScript
-import { processImage } from './canvas.js';
+import { processImage } from './canvas.mjs';
 
 let originalImage = null;
 let currentZoom = 1;
