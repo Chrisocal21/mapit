@@ -635,10 +635,11 @@ function saveImage() {
     const canvas = document.getElementById('editorCanvas');
     const dataURL = canvas.toDataURL('image/png');
     const link = document.createElement('a');
-    link.download = `mapit-${Date.now()}.png`;
+    link.download = `maprdy-${Date.now()}.png`;
     link.href = dataURL;
     link.click();
     setStatus('Image saved!');
+    showToast('PNG image downloaded successfully', 'success', 'Saved');
 }
 
 function copyToClipboard() {
@@ -648,8 +649,10 @@ function copyToClipboard() {
             new ClipboardItem({ 'image/png': blob })
         ]).then(() => {
             setStatus('Copied to clipboard!');
+            showToast('Image copied to clipboard', 'success', 'Copied');
         }).catch(err => {
             showError('Failed to copy: ' + err.message);
+            showToast('Failed to copy to clipboard', 'error', 'Error');
         });
     });
 }
@@ -668,6 +671,79 @@ function setStatus(message) {
 function showError(message) {
     setStatus('Error: ' + message);
     console.error(message);
+}
+
+// ==========================================
+// TOAST NOTIFICATION SYSTEM
+// ==========================================
+
+let toastContainer = null;
+
+function initToastContainer() {
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+}
+
+function showToast(message, type = 'info', title = '', duration = 3000) {
+    initToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    // Icon SVGs
+    const icons = {
+        success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>',
+        error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+        info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+        warning: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    };
+    
+    const defaultTitles = {
+        success: 'Success',
+        error: 'Error',
+        info: 'Info',
+        warning: 'Warning'
+    };
+    
+    const toastTitle = title || defaultTitles[type];
+    
+    toast.innerHTML = `
+        <div class="toast-header">
+            <div class="toast-icon">${icons[type]}</div>
+            <div class="toast-title">${toastTitle}</div>
+            <button class="toast-close">&times;</button>
+        </div>
+        <div class="toast-message">${message}</div>
+        ${duration > 0 ? '<div class="toast-progress"></div>' : ''}
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Close button
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        removeToast(toast);
+    });
+    
+    // Auto remove
+    if (duration > 0) {
+        setTimeout(() => {
+            removeToast(toast);
+        }, duration);
+    }
+    
+    return toast;
+}
+
+function removeToast(toast) {
+    toast.classList.add('toast-out');
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 300);
 }
 
 // ==========================================
@@ -741,6 +817,9 @@ function toggleRulers() {
     
     if (isVisible) {
         drawRulers();
+        showToast('Rulers enabled', 'info');
+    } else {
+        showToast('Rulers disabled', 'info');
     }
 }
 
@@ -792,7 +871,10 @@ function toggleGrid() {
     btn?.classList.toggle('active');
     
     if (isVisible) {
+        showToast('Grid enabled', 'info');
         drawGrid();
+    } else {
+        showToast('Grid disabled', 'info');
     }
 }
 
@@ -973,6 +1055,7 @@ function clearAllGuides() {
     guides.vertical = [];
     renderGuides();
     setStatus('All guides cleared');
+    showToast('All guides cleared', 'success');
 }
 
 function applyPreset(presetName) {
@@ -1061,6 +1144,7 @@ function applyPreset(presetName) {
     // Trigger processing
     processImage();
     setStatus(`${preset.name} preset applied!`);
+    showToast(`${preset.name} preset applied`, 'success', 'Preset Applied');
 }
 
 function toggleFullscreen() {
@@ -1104,6 +1188,7 @@ function exportSettings() {
     link.click();
     URL.revokeObjectURL(url);
     setStatus('Settings exported!');
+    showToast('Settings exported successfully', 'success', 'Exported');
 }
 
 function importSettings() {
@@ -1158,8 +1243,10 @@ function importSettings() {
                 // Trigger processing
                 processImage();
                 setStatus('Settings imported and applied!');
+                showToast('Settings imported and applied successfully', 'success', 'Imported');
             } catch (err) {
                 showError('Invalid settings file: ' + err.message);
+                showToast('Failed to import settings: ' + err.message, 'error', 'Import Failed');
             }
         };
         reader.readAsText(file);
@@ -1183,8 +1270,10 @@ function duplicateSettings() {
     const settingsText = JSON.stringify(settings, null, 2);
     navigator.clipboard.writeText(settingsText).then(() => {
         setStatus('Settings copied to clipboard!');
+        showToast('Settings copied to clipboard', 'success', 'Duplicated');
     }).catch(err => {
         showError('Failed to copy: ' + err.message);
+        showToast('Failed to copy settings', 'error', 'Error');
     });
 }
 
