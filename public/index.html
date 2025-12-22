@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mapit</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%234a90e2'/%3E%3Cpath d='M8 20 L12 12 L16 20 Z M12 12 L16 4 L20 12 Z M16 20 L20 12 L24 20 Z' fill='white' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <title>maprdy - Map to Laser Ready</title>
+    <link rel="icon" type="image/svg+xml" href="maprdylogo.svg">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -186,6 +186,125 @@
         .toolbar-button.flash {
             animation: flash 0.6s ease-in-out 3;
         }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.2s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #3a3a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            color: #888;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background: #3a3a3a;
+            color: #e0e0e0;
+        }
+        
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            color: #e0e0e0;
+        }
+        
+        .btn-secondary {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #4a4a4a !important;
+        }
+        
+        .btn-primary {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #5a9ee8 !important;
+        }
+        
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
         .toolbar-badge {
             display: inline-block;
@@ -321,92 +440,6 @@
 
         .menu-control .toolbar-badge {
             margin-left: 0;
-        }
-
-        /* Help Modal */
-        .help-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 1rem;
-        }
-
-        .help-modal.show {
-            display: flex;
-        }
-
-        .help-modal-content {
-            background: white;
-            border-radius: 8px;
-            max-width: 700px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 2rem;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .help-modal-content h2 {
-            margin-top: 0;
-            color: #333;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .help-modal-content h3 {
-            color: #4a90e2;
-            font-size: 1.1rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .help-modal-content p {
-            line-height: 1.6;
-            color: #555;
-            margin-bottom: 1rem;
-        }
-
-        .help-modal-content ul {
-            margin: 0.5rem 0;
-            padding-left: 1.5rem;
-        }
-
-        .help-modal-content li {
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        .help-modal-content code {
-            background: #f0f0f0;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: monospace;
-            color: #d63384;
-        }
-
-        .help-modal-content .help-tip {
-            background: #e7f3ff;
-            border-left: 3px solid #4a90e2;
-            padding: 0.75rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-
-        .help-modal-content .help-tip strong {
-            color: #4a90e2;
         }
 
         /* Main content area */
@@ -1201,25 +1234,6 @@
                 height: 32px;
                 font-size: 1.5rem;
             }
-
-            .help-modal-content {
-                padding: 1rem;
-                max-height: 90vh;
-                font-size: 0.9rem;
-            }
-
-            .help-modal-content h2 {
-                font-size: 1.2rem;
-            }
-
-            .help-modal-content h3 {
-                font-size: 1rem;
-            }
-
-            .help-modal-content p,
-            .help-modal-content li {
-                font-size: 0.85rem;
-            }
         }
 
         /* Extra small phones */
@@ -1308,13 +1322,10 @@
         <header>
             <div class="header-top">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink: 0;">
-                        <rect width="32" height="32" rx="6" fill="#4a90e2"/>
-                        <path d="M8 12 L16 8 L24 12 L16 16 Z" fill="white"/>
-                        <path d="M8 16 L16 12 L16 24 L8 20 Z" fill="white" opacity="0.8"/>
-                        <path d="M24 16 L16 12 L16 24 L24 20 Z" fill="white" opacity="0.6"/>
-                    </svg>
-                    <h1 style="margin: 0;">mapit</h1>
+                    <div style="background: white; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                        <img src="maprdylogo.svg" width="28" height="24" alt="maprdy" style="display: block;">
+                    </div>
+                    <h1 style="margin: 0; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.15em;">M A P R D Y</h1>
                 </div>
                 <div class="search-container">
                     <input 
@@ -1426,13 +1437,6 @@
 
                     <!-- Primary Actions (Always Visible) -->
                     <div style="display: flex; gap: 0.5rem; align-items: center; margin-left: auto;">
-                        <button type="button" class="toolbar-button" id="aiButton" title="AI Assistant" style="padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.35rem;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
-                            </svg>
-                            <span class="ai-badge">AI</span>
-                        </button>
                         <button type="button" class="menu-button" id="helpBtn" title="Help & Instructions" style="padding: 0.5rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
@@ -1440,11 +1444,17 @@
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
                             </svg>
                         </button>
-                        <button type="button" class="toolbar-button" id="generateBtn" style="background: #4a90e2; border-color: #4a90e2; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600;">
-                            🎨 Generate & Edit
+                        <button type="button" class="toolbar-button" id="aiButton" title="AI Assistant" style="padding: 0.65rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                <rect x="9" y="9" width="6" height="6"/>
+                                <path d="M9 2V4M15 2V4M9 20V22M15 20V22M2 9H4M2 15H4M20 9H22M20 15H22" stroke-linecap="round"/>
+                            </svg>
+                            <span class="ai-badge">AI</span>
                         </button>
-                        <button type="button" class="toolbar-button" id="downloadBtn" disabled style="padding: 0.5rem 1rem;">Download</button>
-                        <button type="button" class="toolbar-button" id="openPreviewBtn" disabled style="padding: 0.5rem 1rem;">Preview</button>
+                        <button type="button" class="toolbar-button" id="generateBtn" style="background: #4a90e2; border-color: #4a90e2; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600;">
+                            Process Map
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1616,77 +1626,7 @@
         </div>
     </div>
 
-    <!-- Help Modal -->
-    <div class="help-modal" id="helpModal">
-        <div class="help-modal-content">
-            <button class="close-modal" id="closeHelpModal" style="position: absolute; top: 1rem; right: 1rem;">&times;</button>
-            
-            <h2>mapit Quick Start Guide</h2>
-            
-            <h3>Step 1: Find Your Location</h3>
-            <p><strong>Using Search:</strong></p>
-            <ul>
-                <li>Type an address, city, or landmark in the search bar</li>
-                <li>Select a result from the dropdown to navigate</li>
-            </ul>
-            <p><strong>Manual Navigation:</strong></p>
-            <ul>
-                <li>Click and drag to pan the map</li>
-                <li>Use mouse wheel to zoom in/out</li>
-                <li>Click any location to re-center</li>
-            </ul>
 
-            <h3>Step 2: Define Selection Area</h3>
-            <p>The blue rectangle indicates the capture area.</p>
-            <ul>
-                <li><strong>Hold SPACEBAR</strong> to enable selection mode</li>
-                <li>While holding SPACEBAR: drag to move, scroll to rotate</li>
-                <li>Release SPACEBAR to return to map navigation</li>
-            </ul>
-
-            <div class="help-tip">
-                <strong>Tip:</strong> Use the <strong>Tools</strong> menu to set exact dimensions or lock your selection to prevent accidental changes.
-            </div>
-
-            <h3>Step 3: Configure Settings</h3>
-            <p>Open the dropdown menus to customize your output:</p>
-            <ul>
-                <li><strong>Settings</strong> - Map style, output size, aspect ratio, contrast threshold</li>
-                <li><strong>Effects</strong> - Laser mode (for engraving), edge detection, invert colors, warp</li>
-                <li><strong>Tools</strong> - Lock controls, precise dimensions, clear selection</li>
-            </ul>
-
-            <h3>Step 4: Generate & Preview</h3>
-            <ul>
-                <li>Click <strong>Generate</strong> to process your image</li>
-                <li>Click <strong>Preview</strong> to open the preview window</li>
-                <li>Adjust settings in real-time with the sliders and toggles</li>
-                <li>Use zoom/pan controls to inspect fine details</li>
-            </ul>
-
-            <h3>Step 5: Export Your Image</h3>
-            <ul>
-                <li><strong>Download PNG</strong> - Save high-resolution file to your computer</li>
-                <li><strong>Copy Image</strong> - Copy to clipboard for pasting into other applications</li>
-                <li><strong>Regenerate</strong> - Process again with updated settings</li>
-            </ul>
-
-            <div class="help-tip">
-                <strong>For Laser Engraving:</strong> Enable <code>Laser</code> mode in Effects menu. In preview, enable "Black Text with White Box" and "Black Roads" for optimal results.
-            </div>
-
-            <h3>Keyboard Shortcuts</h3>
-            <ul>
-                <li><code>SPACEBAR</code> (hold) - Enable selection manipulation mode</li>
-                <li><code>SPACEBAR + Drag</code> - Move selection box</li>
-                <li><code>SPACEBAR + Scroll</code> - Rotate selection</li>
-            </ul>
-
-            <p style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; color: #666; font-size: 0.9rem;">
-                For complete documentation, see <strong>USER_GUIDE.md</strong>
-            </p>
-        </div>
-    </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1737,23 +1677,477 @@
 
             // Help modal controls
             const helpBtn = document.getElementById('helpBtn');
-            const helpModal = document.getElementById('helpModal');
-            const closeHelpModal = document.getElementById('closeHelpModal');
-
-            if (helpBtn && helpModal && closeHelpModal) {
+            
+            if (helpBtn) {
                 helpBtn.addEventListener('click', () => {
-                    helpModal.classList.add('show');
+                    showHelpModal();
                 });
-
-                closeHelpModal.addEventListener('click', () => {
-                    helpModal.classList.remove('show');
+            }
+            
+            function showHelpModal() {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 800px; max-height: 90vh;">
+                        <div class="modal-header">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                </svg>
+                                <h2>Help & Documentation</h2>
+                            </div>
+                            <button class="modal-close">&times;</button>
+                        </div>
+                        
+                        <!-- Tab Navigation -->
+                        <div style="display: flex; border-bottom: 1px solid #3a3a3a; background: #2a2a2a;">
+                            <button class="help-tab active" data-tab="quickstart" style="flex: 1; padding: 12px 20px; background: none; border: none; color: #888; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; border-bottom: 2px solid transparent;">
+                                Quick Start
+                            </button>
+                            <button class="help-tab" data-tab="keyboard" style="flex: 1; padding: 12px 20px; background: none; border: none; color: #888; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; border-bottom: 2px solid transparent;">
+                                Keyboard Shortcuts
+                            </button>
+                            <button class="help-tab" data-tab="features" style="flex: 1; padding: 12px 20px; background: none; border: none; color: #888; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; border-bottom: 2px solid transparent;">
+                                Features Guide
+                            </button>
+                            <button class="help-tab" data-tab="tips" style="flex: 1; padding: 12px 20px; background: none; border: none; color: #888; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; border-bottom: 2px solid transparent;">
+                                Pro Tips
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body" style="padding: 0;">
+                            <!-- Quick Start Tab -->
+                            <div class="help-content active" data-content="quickstart" style="padding: 24px;">
+                                <h3 style="color: #4a90e2; margin: 0 0 20px 0; font-size: 18px;">Getting Started with mapit</h3>
+                                
+                                <div class="help-step">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <div style="background: #4a90e2; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">1</div>
+                                        <h4 style="margin: 0; color: #e0e0e0; font-size: 16px;">Find Your Location</h4>
+                                    </div>
+                                    <div style="padding-left: 44px; color: #b0b0b0; line-height: 1.6;">
+                                        <p style="margin-bottom: 8px;"><strong style="color: #e0e0e0;">Search:</strong> Type an address or landmark in the search bar</p>
+                                        <p style="margin-bottom: 0;"><strong style="color: #e0e0e0;">Navigate:</strong> Click and drag to pan, scroll to zoom</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="help-step" style="margin-top: 24px;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <div style="background: #4a90e2; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">2</div>
+                                        <h4 style="margin: 0; color: #e0e0e0; font-size: 16px;">Adjust Selection Area</h4>
+                                    </div>
+                                    <div style="padding-left: 44px; color: #b0b0b0; line-height: 1.6;">
+                                        <p style="margin-bottom: 8px;">The blue rectangle shows what will be captured.</p>
+                                        <div style="background: #3a3a3a; padding: 12px; border-radius: 4px; border-left: 3px solid #4a90e2;">
+                                            <strong style="color: #4a90e2;">Hold SPACEBAR:</strong>
+                                            <ul style="margin: 8px 0 0 20px; padding: 0;">
+                                                <li>Drag to move selection</li>
+                                                <li>Scroll to rotate</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="help-step" style="margin-top: 24px;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <div style="background: #4a90e2; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">3</div>
+                                        <h4 style="margin: 0; color: #e0e0e0; font-size: 16px;">Configure Settings</h4>
+                                    </div>
+                                    <div style="padding-left: 44px; color: #b0b0b0; line-height: 1.6;">
+                                        <p style="margin-bottom: 8px;">Customize your map output:</p>
+                                        <ul style="margin: 0 0 0 20px; padding: 0; line-height: 1.8;">
+                                            <li><strong style="color: #e0e0e0;">Settings:</strong> Style, size, aspect ratio, contrast</li>
+                                            <li><strong style="color: #e0e0e0;">Effects:</strong> Laser mode, edge detection, invert</li>
+                                            <li><strong style="color: #e0e0e0;">Tools:</strong> Lock selection, dimensions, clear</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="help-step" style="margin-top: 24px;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <div style="background: #4a90e2; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">4</div>
+                                        <h4 style="margin: 0; color: #e0e0e0; font-size: 16px;">Process & Edit</h4>
+                                    </div>
+                                    <div style="padding-left: 44px; color: #b0b0b0; line-height: 1.6;">
+                                        <p style="margin: 0;">Click <strong style="color: #4a90e2;">Process Map</strong> to generate your image. The professional editor will open with advanced controls for fine-tuning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Keyboard Shortcuts Tab -->
+                            <div class="help-content" data-content="keyboard" style="padding: 24px; display: none;">
+                                <h3 style="color: #4a90e2; margin: 0 0 20px 0; font-size: 18px;">Keyboard Shortcuts</h3>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                                    <div>
+                                        <h4 style="color: #4a90e2; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">Map Navigation</h4>
+                                        <div class="shortcut-list">
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Drag selection</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">SPACE + Drag</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                                <span style="color: #b0b0b0;">Rotate selection</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">SPACE + Scroll</kbd>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 style="color: #4a90e2; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">File Operations</h4>
+                                        <div class="shortcut-list">
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Save as PNG</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+S</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Save as JPG</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+Shift+S</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Export settings</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+E</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                                <span style="color: #b0b0b0;">Import settings</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+I</kbd>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 style="color: #4a90e2; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">Edit</h4>
+                                        <div class="shortcut-list">
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Undo</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+Z</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Redo</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+Y</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Duplicate settings</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+D</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                                <span style="color: #b0b0b0;">Preferences</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+,</kbd>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 style="color: #4a90e2; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">View</h4>
+                                        <div class="shortcut-list">
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Toggle rulers</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+R</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Toggle grid</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+G</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Toggle guides</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+;</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Toggle toolbar</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+H</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Actual size (100%)</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+1</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Fit to window</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Ctrl+0</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Zoom in</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">+</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Zoom out</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">-</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Pan canvas</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Space + Drag</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                                <span style="color: #b0b0b0;">Fullscreen</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">F11</kbd>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 style="color: #4a90e2; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">Adjustments & Other</h4>
+                                        <div class="shortcut-list">
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Increase contrast</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">↑</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Decrease contrast</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">↓</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Clear all guides</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Delete</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #3a3a3a;">
+                                                <span style="color: #b0b0b0;">Close modal/cancel</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">Escape</kbd>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                                <span style="color: #b0b0b0;">Show help</span>
+                                                <kbd style="background: #1e1e1e; padding: 4px 8px; border-radius: 3px; font-family: monospace; color: #4a90e2; font-size: 12px;">F1</kbd>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Features Guide Tab -->
+                            <div class="help-content" data-content="features" style="padding: 24px; display: none;">
+                                <h3 style="color: #4a90e2; margin: 0 0 20px 0; font-size: 18px;">Feature Guide</h3>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <circle cx="12" cy="12" r="3"/>
+                                            <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22"/>
+                                        </svg>
+                                        Contrast & Threshold
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Controls how light/dark areas are separated. Lower values = more detail, higher = cleaner lines. Ideal range: 180-220 for most maps.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <rect x="3" y="3" width="7" height="7"/>
+                                            <rect x="14" y="3" width="7" height="7"/>
+                                            <rect x="14" y="14" width="7" height="7"/>
+                                            <rect x="3" y="14" width="7" height="7"/>
+                                        </svg>
+                                        Edge Detection
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Highlights boundaries and outlines. Great for artistic effects or tracing paths. Works best with medium contrast settings.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                                        </svg>
+                                        Laser Mode
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Converts to pure black on white - perfect for laser engraving. Removes grays for clean, engraveable output. Combine with "Black Roads" and "Black Text" for best results.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                                            <path d="M2 17L12 22L22 17"/>
+                                            <path d="M2 12L12 17L22 12"/>
+                                        </svg>
+                                        Layers
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Toggle between processed and original map views. Adjust opacity to compare before/after. Perfect for fine-tuning your settings.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <line x1="3" y1="9" x2="21" y2="9"/>
+                                            <line x1="9" y1="21" x2="9" y2="3"/>
+                                        </svg>
+                                        Rulers & Grid
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Professional rulers with customizable units (pixels, inches, cm). Toggle grid overlay with configurable spacing and opacity. Perfect for precise measurements and alignment. Use Ctrl+R for rulers, Ctrl+G for grid.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <path d="M3 3L21 21M3 21L21 3"/>
+                                        </svg>
+                                        Draggable Guides
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Drag guides from rulers to create horizontal and vertical reference lines. Perfect for alignment and composition. Toggle with Ctrl+; or clear all with Delete key. Guides glow cyan for easy visibility.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                                        </svg>
+                                        Quick Presets
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">One-click configurations for common use cases: Laser (optimized for engraving), Print (high contrast), Detailed (preserves fine features), and Clean (minimal aesthetic). Instantly apply professionally tuned settings.</p>
+                                </div>
+                                
+                                <div class="feature-section" style="margin-bottom: 24px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <circle cx="12" cy="12" r="3"/>
+                                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                        </svg>
+                                        Preferences
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0 0 8px 0; line-height: 1.6;">Customize grid spacing, ruler units, display intervals, and default settings. All preferences are saved locally so your workspace stays configured exactly how you like it. Access with Ctrl+,</p>
+                                </div>
+                                
+                                <div class="feature-section">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                            <rect x="9" y="9" width="6" height="6"/>
+                                            <path d="M9 2V4M15 2V4M9 20V22M15 20V22M2 9H4M2 15H4M20 9H22M20 15H22" stroke-linecap="round"/>
+                                        </svg>
+                                        AI Assistant
+                                    </h4>
+                                    <p style="color: #b0b0b0; margin: 0; line-height: 1.6;">Get intelligent recommendations for style, size, and settings based on your intended use. Tell the AI what you're making (wall art, laser engraving, etc.) for optimized suggestions.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Pro Tips Tab -->
+                            <div class="help-content" data-content="tips" style="padding: 24px; display: none;">
+                                <h3 style="color: #4a90e2; margin: 0 0 20px 0; font-size: 18px;">Pro Tips & Best Practices</h3>
+                                
+                                <div style="background: #3a3a3a; padding: 16px; border-radius: 4px; border-left: 4px solid #27ae60; margin-bottom: 16px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2">
+                                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                                        </svg>
+                                        For Laser Engraving
+                                    </h4>
+                                    <ul style="margin: 0; padding-left: 20px; color: #b0b0b0; line-height: 1.8;">
+                                        <li>Enable <strong style="color: #e0e0e0;">Laser Mode</strong></li>
+                                        <li>Check <strong style="color: #e0e0e0;">Black Text with Box</strong></li>
+                                        <li>Enable <strong style="color: #e0e0e0;">Black Roads</strong></li>
+                                        <li>Set contrast to 200-220</li>
+                                        <li>Use <strong style="color: #e0e0e0;">Thicken Text</strong> (1-2px) for small maps</li>
+                                    </ul>
+                                </div>
+                                
+                                <div style="background: #3a3a3a; padding: 16px; border-radius: 4px; border-left: 4px solid #3498db; margin-bottom: 16px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3498db" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <path d="M21 15L16 10L5 21"/>
+                                        </svg>
+                                        For Wall Art / Posters
+                                    </h4>
+                                    <ul style="margin: 0; padding-left: 20px; color: #b0b0b0; line-height: 1.8;">
+                                        <li>Keep contrast lower (160-180) for more detail</li>
+                                        <li>Try <strong style="color: #e0e0e0;">White Water</strong> for coastal areas</li>
+                                        <li>Use larger output sizes (2560+)</li>
+                                        <li>Experiment with <strong style="color: #e0e0e0;">Invert</strong> for dark backgrounds</li>
+                                    </ul>
+                                </div>
+                                
+                                <div style="background: #3a3a3a; padding: 16px; border-radius: 4px; border-left: 4px solid #e74c3c; margin-bottom: 16px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2">
+                                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                                        </svg>
+                                        Performance Tips
+                                    </h4>
+                                    <ul style="margin: 0; padding-left: 20px; color: #b0b0b0; line-height: 1.8;">
+                                        <li>Start with smaller sizes (1280) to test settings quickly</li>
+                                        <li>Use <strong style="color: #e0e0e0;">Ctrl+Z</strong> to undo changes instantly</li>
+                                        <li>Save your favorite settings using browser bookmarks</li>
+                                        <li>Lock selection (Tools menu) to prevent accidental moves</li>
+                                    </ul>
+                                </div>
+                                
+                                <div style="background: #3a3a3a; padding: 16px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 16px;">
+                                    <h4 style="color: #e0e0e0; margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polygon points="10 8 16 12 10 16 10 8"/>
+                                        </svg>
+                                        Advanced Techniques
+                                    </h4>
+                                    <ul style="margin: 0; padding-left: 20px; color: #b0b0b0; line-height: 1.8;">
+                                        <li><strong style="color: #e0e0e0;">Rotation:</strong> Hold SPACEBAR + scroll to rotate selection</li>
+                                        <li><strong style="color: #e0e0e0;">Coastlines:</strong> Enable "Thicken Coastlines" for island maps</li>
+                                        <li><strong style="color: #e0e0e0;">Drag-and-drop:</strong> Reorder editor sections by dragging headers</li>
+                                        <li><strong style="color: #e0e0e0;">Layers:</strong> Use opacity slider to fade original map overlay</li>
+                                        <li><strong style="color: #e0e0e0;">Batch work:</strong> Process multiple areas, compare in separate tabs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                
+                // Tab switching
+                const tabs = modal.querySelectorAll('.help-tab');
+                const contents = modal.querySelectorAll('.help-content');
+                
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const targetTab = tab.dataset.tab;
+                        
+                        // Update tabs
+                        tabs.forEach(t => {
+                            t.classList.remove('active');
+                            t.style.color = '#888';
+                            t.style.borderBottomColor = 'transparent';
+                        });
+                        tab.classList.add('active');
+                        tab.style.color = '#e0e0e0';
+                        tab.style.borderBottomColor = '#4a90e2';
+                        
+                        // Update content
+                        contents.forEach(c => {
+                            c.classList.remove('active');
+                            c.style.display = 'none';
+                        });
+                        const targetContent = modal.querySelector(`[data-content="${targetTab}"]`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                            targetContent.style.display = 'block';
+                        }
+                    });
                 });
-
-                helpModal.addEventListener('click', (e) => {
-                    if (e.target === helpModal) {
-                        helpModal.classList.remove('show');
+                
+                // Set initial active tab styling
+                const activeTab = modal.querySelector('.help-tab.active');
+                if (activeTab) {
+                    activeTab.style.color = '#e0e0e0';
+                    activeTab.style.borderBottomColor = '#4a90e2';
+                }
+                
+                // Close handlers
+                modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+                
+                // ESC key to close
+                const escHandler = (e) => {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                        document.removeEventListener('keydown', escHandler);
                     }
-                });
+                };
+                document.addEventListener('keydown', escHandler);
             }
         });
 
@@ -1774,6 +2168,8 @@
         let boundingBox;
         let processedImageData = null;
         let originalImageElement = null;
+        let originalImageData = null; // Unprocessed original image for editor
+        let selectedLocationName = 'New York City, New York, United States'; // Store selected location name
         let currentEnvelopeWarp = 0; // 0, 1, 2, 3, 4 for Off, -1%, -2%, -3%, -4%
         let isDragModeEnabled = false; // Keyboard control for dragging
         let rotationAngle = 0; // Rotation angle in degrees
@@ -2396,7 +2792,7 @@
             }
 
             resultsDiv.innerHTML = features.map(feature => `
-                <div class="search-result-item" onclick="selectLocation(${feature.center[1]}, ${feature.center[0]})">
+                <div class="search-result-item" onclick='selectLocation(${feature.center[1]}, ${feature.center[0]}, "${feature.place_name.replace(/"/g, '&quot;')}")'>
                     ${feature.place_name}
                 </div>
             `).join('');
@@ -2404,7 +2800,12 @@
             resultsDiv.style.display = 'block';
         }
 
-        function selectLocation(lat, lng) {
+        function selectLocation(lat, lng, placeName) {
+            // Store the selected location name
+            if (placeName) {
+                selectedLocationName = placeName;
+            }
+            
             map.setView([lat, lng], 14);
             
             // Center bounding box on location
@@ -2467,98 +2868,265 @@
 
         // AI Assistant Button
         document.getElementById('aiButton').addEventListener('click', async function() {
-            const btn = this;
-            const originalHTML = btn.innerHTML;
-            
-            // Ask user what they need the map for
-            const purpose = prompt(
-                '🤖 What do you need this map for?\n\n' +
-                'Examples:\n' +
-                '• "wall art"\n' +
-                '• "laser engraving"\n' +
-                '• "printing a poster"\n' +
-                '• "trail planning"\n' +
-                '• "city planning"\n' +
-                '• "presentation"\n\n' +
-                'Enter your purpose:'
-            );
-            
-            if (!purpose || purpose.trim() === '') {
-                return; // User cancelled
-            }
-            
-            btn.disabled = true;
-            btn.innerHTML = '<div class="ai-loading"></div> <span class="ai-badge">AI</span>';
-            
-            try {
-                const bounds = boundingBox.getBounds();
-                const center = bounds.getCenter();
-                const style = document.getElementById('mapStyle').value;
-                const size = document.getElementById('imageSize').value;
-                
-                // Get AI optimization suggestions
-                const response = await fetch('/api/ai/suggest', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        location: `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`,
-                        style: style,
-                        dimensions: `${size}x${size}`,
-                        purpose: purpose.trim()
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Show suggestions and ask to apply
-                    let message = `🤖 AI Recommendations for "${purpose}":\n\n`;
-                    message += `📍 Style: ${data.suggestedStyle}\n`;
-                    message += `📐 Size: ${data.suggestedDimensions}\n\n`;
-                    message += `💡 ${data.reasoning}\n\n`;
-                    message += `✨ Tips:\n${data.tips.map(tip => `  • ${tip}`).join('\n')}\n\n`;
-                    message += `Apply these settings now?`;
-                    
-                    if (confirm(message)) {
-                        // Apply the suggestions
-                        document.getElementById('mapStyle').value = data.suggestedStyle;
-                        
-                        // Parse dimensions (e.g., "2560x2560" or "2560x1920")
-                        const [width, height] = data.suggestedDimensions.split('x').map(s => s.trim());
-                        if (width && height) {
-                            document.getElementById('imageSize').value = Math.max(parseInt(width), parseInt(height));
-                            
-                            // Set aspect ratio if not square
-                            if (width !== height) {
-                                const ratio = `${width}:${height}`;
-                                const ratioSelect = document.getElementById('aspectRatio');
-                                // Check if this ratio exists in the dropdown
-                                const options = Array.from(ratioSelect.options).map(opt => opt.value);
-                                if (options.includes(ratio)) {
-                                    ratioSelect.value = ratio;
-                                }
-                            }
-                        }
-                        
-                        // Show what was changed
-                        alert(`✅ Settings Applied!\n\nStyle: ${data.suggestedStyle}\nSize: ${data.suggestedDimensions}\n\nClick "Generate" to create your map.`);
-                        
-                        // Flash the Generate button to draw attention
-                        const generateBtn = document.getElementById('generateBtn');
-                        generateBtn.classList.add('flash');
-                        setTimeout(() => generateBtn.classList.remove('flash'), 1800);
-                    }
-                } else {
-                    alert('AI assistant is not configured. Add your OpenAI API key to .env file.');
-                }
-            } catch (error) {
-                console.error('AI error:', error);
-                alert('AI assistant unavailable. Check console for details.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalHTML;
-            }
+            showAIModal();
         });
+        
+        function showAIModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                <rect x="9" y="9" width="6" height="6"/>
+                                <path d="M9 2V4M15 2V4M9 20V22M15 20V22M2 9H4M2 15H4M20 9H22M20 15H22" stroke-linecap="round"/>
+                            </svg>
+                            <h2>AI Assistant</h2>
+                        </div>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #e0e0e0;">
+                                What do you need this map for?
+                            </label>
+                            <textarea 
+                                id="aiPurposeInput" 
+                                placeholder="Examples:&#10;• Wall art for my living room&#10;• Laser engraving on wood&#10;• Printed poster (24x36 inches)&#10;• Trail planning and hiking&#10;• City planning presentation&#10;• Gift for a friend"
+                                style="width: 100%; min-height: 120px; padding: 12px; background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 4px; color: #e0e0e0; font-family: inherit; font-size: 14px; resize: vertical; pointer-events: auto; user-select: text; -webkit-user-select: text;"
+                            ></textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button class="btn-secondary" id="aiCancelBtn" style="padding: 10px 20px; background: #3a3a3a; border: none; border-radius: 4px; color: #e0e0e0; cursor: pointer; font-size: 14px;">
+                                Cancel
+                            </button>
+                            <button class="btn-primary" id="aiSubmitBtn" style="padding: 10px 20px; background: #4a90e2; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                </svg>
+                                Get AI Recommendations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const input = document.getElementById('aiPurposeInput');
+            const submitBtn = document.getElementById('aiSubmitBtn');
+            const cancelBtn = document.getElementById('aiCancelBtn');
+            
+            // Focus input
+            setTimeout(() => input.focus(), 100);
+            
+            // Close handlers
+            modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+            cancelBtn.addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            // Submit handler
+            submitBtn.addEventListener('click', async () => {
+                const purpose = input.value.trim();
+                if (!purpose) {
+                    input.style.borderColor = '#e74c3c';
+                    return;
+                }
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div> Processing...';
+                
+                try {
+                    const bounds = boundingBox.getBounds();
+                    const center = bounds.getCenter();
+                    const style = document.getElementById('mapStyle').value;
+                    const size = document.getElementById('imageSize').value;
+                    
+                    const response = await fetch('/api/ai/suggest', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            location: `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`,
+                            style: style,
+                            dimensions: `${size}x${size}`,
+                            purpose: purpose
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        modal.remove();
+                        showAIResultsModal(data, purpose);
+                    } else {
+                        throw new Error('AI service unavailable');
+                    }
+                } catch (error) {
+                    console.error('AI error:', error);
+                    modal.remove();
+                    showErrorModal('AI assistant is not configured. Add your OpenAI API key to .env file.');
+                }
+            });
+            
+            // Enter key to submit
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    submitBtn.click();
+                }
+            });
+        }
+        
+        function showAIResultsModal(data, purpose) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                            </svg>
+                            <h2>AI Recommendations</h2>
+                        </div>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="background: #2a2a2a; border-left: 3px solid #4a90e2; padding: 16px; border-radius: 4px; margin-bottom: 20px;">
+                            <div style="color: #888; font-size: 12px; margin-bottom: 4px;">PURPOSE</div>
+                            <div style="color: #e0e0e0; font-style: italic;">"${purpose}"</div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+                            <div style="background: #2a2a2a; padding: 16px; border-radius: 4px;">
+                                <div style="color: #4a90e2; font-size: 12px; font-weight: 600; margin-bottom: 8px;">📍 SUGGESTED STYLE</div>
+                                <div style="color: #e0e0e0; font-size: 16px; font-weight: 600;">${data.suggestedStyle}</div>
+                            </div>
+                            <div style="background: #2a2a2a; padding: 16px; border-radius: 4px;">
+                                <div style="color: #4a90e2; font-size: 12px; font-weight: 600; margin-bottom: 8px;">📐 RECOMMENDED SIZE</div>
+                                <div style="color: #e0e0e0; font-size: 16px; font-weight: 600;">${data.suggestedDimensions}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #2a2a2a; padding: 16px; border-radius: 4px; margin-bottom: 16px;">
+                            <div style="color: #4a90e2; font-size: 12px; font-weight: 600; margin-bottom: 8px;">💡 REASONING</div>
+                            <div style="color: #b0b0b0; line-height: 1.6;">${data.reasoning}</div>
+                        </div>
+                        
+                        <div style="background: #2a2a2a; padding: 16px; border-radius: 4px; margin-bottom: 20px;">
+                            <div style="color: #4a90e2; font-size: 12px; font-weight: 600; margin-bottom: 8px;">✨ TIPS</div>
+                            <ul style="margin: 0; padding-left: 20px; color: #b0b0b0; line-height: 1.8;">
+                                ${data.tips.map(tip => `<li>${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button class="btn-secondary" id="aiDeclineBtn" style="padding: 10px 20px; background: #3a3a3a; border: none; border-radius: 4px; color: #e0e0e0; cursor: pointer; font-size: 14px;">
+                                No Thanks
+                            </button>
+                            <button class="btn-primary" id="aiApplyBtn" style="padding: 10px 20px; background: #4a90e2; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: 600; font-size: 14px;">
+                                ✓ Apply Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Close handlers
+            modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+            document.getElementById('aiDeclineBtn').addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            // Apply handler
+            document.getElementById('aiApplyBtn').addEventListener('click', () => {
+                // Apply the suggestions
+                document.getElementById('mapStyle').value = data.suggestedStyle;
+                
+                // Parse dimensions
+                const [width, height] = data.suggestedDimensions.split('x').map(s => s.trim());
+                if (width && height) {
+                    document.getElementById('imageSize').value = Math.max(parseInt(width), parseInt(height));
+                    
+                    // Set aspect ratio if not square
+                    if (width !== height) {
+                        const ratio = `${width}:${height}`;
+                        const ratioSelect = document.getElementById('aspectRatio');
+                        const options = Array.from(ratioSelect.options).map(opt => opt.value);
+                        if (options.includes(ratio)) {
+                            ratioSelect.value = ratio;
+                        }
+                    }
+                }
+                
+                modal.remove();
+                
+                // Show success message
+                showSuccessModal(`Settings applied! Click "Process Map" to generate with AI-optimized settings.`);
+                
+                // Flash the Generate button
+                const generateBtn = document.getElementById('generateBtn');
+                generateBtn.classList.add('flash');
+                setTimeout(() => generateBtn.classList.remove('flash'), 1800);
+            });
+        }
+        
+        function showSuccessModal(message) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px; text-align: center;">
+                    <div class="modal-body" style="padding: 32px;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2" style="margin-bottom: 16px;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        <div style="color: #e0e0e0; font-size: 16px; line-height: 1.6;">${message}</div>
+                        <button class="btn-primary" style="margin-top: 20px; padding: 10px 24px; background: #4a90e2; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: 600;">
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.querySelector('.btn-primary').addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            // Auto-close after 3 seconds
+            setTimeout(() => modal.remove(), 3000);
+        }
+        
+        function showErrorModal(message) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px; text-align: center;">
+                    <div class="modal-body" style="padding: 32px;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" style="margin-bottom: 16px;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        <div style="color: #e0e0e0; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">${message}</div>
+                        <button class="btn-primary" style="padding: 10px 24px; background: #3a3a3a; border: none; border-radius: 4px; color: #e0e0e0; cursor: pointer; font-weight: 600;">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.querySelector('.btn-primary').addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
 
         // AI Map Description (called when preview opens)
         async function getAIDescription() {
@@ -2729,15 +3297,62 @@
 
         // Generate engraving image
         document.getElementById('generateBtn').addEventListener('click', async function() {
+            console.log('Generate button clicked');
+            
             // Get parameters
             const bounds = boundingBox.getBounds();
-            // Use 'laser' style when laser mode is active, otherwise use selected style
-            const style = laserMode ? 'laser' : document.getElementById('mapStyle').value;
-            const baseSize = parseInt(document.getElementById('imageSize').value);
-            const aspectRatio = document.getElementById('aspectRatio').value;
+            
+            const mapStyleElement = document.getElementById('mapStyle');
+            const imageSizeElement = document.getElementById('imageSize');
+            const aspectRatioElement = document.getElementById('aspectRatio');
+            
+            console.log('mapStyle element:', mapStyleElement);
+            console.log('mapStyle value:', mapStyleElement?.value);
+            console.log('mapStyle selected option:', mapStyleElement?.options[mapStyleElement?.selectedIndex]?.value);
+            console.log('imageSize element:', imageSizeElement);
+            console.log('imageSize value:', imageSizeElement?.value);
+            console.log('imageSize selected option:', imageSizeElement?.options[imageSizeElement?.selectedIndex]?.value);
+            console.log('aspectRatio element:', aspectRatioElement);
+            console.log('aspectRatio value:', aspectRatioElement?.value);
+            
+            // Use selectedIndex approach for hidden dropdowns
+            const rawStyle = mapStyleElement?.options[mapStyleElement?.selectedIndex]?.value || 'streets-v12';
+            const style = laserMode ? 'laser' : rawStyle;
+            const baseSizeStr = imageSizeElement?.options[imageSizeElement?.selectedIndex]?.value || '1280';
+            const baseSize = parseInt(baseSizeStr);
+            const aspectRatio = aspectRatioElement?.value || '1:1';
+            
+            console.log('Raw style:', rawStyle);
+            console.log('LaserMode active:', laserMode);
+            console.log('Final style:', style);
+            console.log('Base size string:', baseSizeStr);
+            console.log('Parsed baseSize:', baseSize);
+            console.log('Parsed aspectRatio:', aspectRatio);
+            
+            // Validate inputs
+            if (!aspectRatio || !aspectRatio.includes(':')) {
+                console.error('Invalid aspect ratio:', aspectRatio);
+                alert('Invalid aspect ratio selected. Please refresh the page and try again.');
+                return;
+            }
+            
+            if (isNaN(baseSize) || baseSize < 1) {
+                console.error('Invalid image size:', baseSize);
+                alert('Invalid image size. Please select a valid size and try again.');
+                return;
+            }
             
             // Calculate width and height based on aspect ratio
             const [ratioW, ratioH] = aspectRatio.split(':').map(Number);
+            
+            console.log('Ratio components:', ratioW, ratioH);
+            
+            if (isNaN(ratioW) || isNaN(ratioH) || ratioW <= 0 || ratioH <= 0) {
+                console.error('Invalid aspect ratio values:', ratioW, ratioH);
+                alert('Invalid aspect ratio format. Please refresh the page and try again.');
+                return;
+            }
+            
             const aspectValue = ratioW / ratioH;
             
             let width, height;
@@ -2749,6 +3364,15 @@
                 // Portrait - base size is height
                 height = baseSize;
                 width = Math.round(baseSize * aspectValue);
+            }
+            
+            console.log('Calculated dimensions:', width, 'x', height);
+            
+            // Final validation
+            if (isNaN(width) || isNaN(height) || width < 1 || height < 1) {
+                console.error('Invalid calculated dimensions:', width, height);
+                alert('Error calculating image dimensions. Please refresh the page and try again.');
+                return;
             }
             
             // Build Mapbox Static Images API URL
@@ -2822,21 +3446,15 @@
                             // Clean up object URL after processing
                             URL.revokeObjectURL(objectURL);
                             
-                            // Auto-open Professional Editor after generation
-                            setTimeout(() => {
-                                const previewBtn = document.getElementById('openPreviewBtn');
-                                if (previewBtn && !previewBtn.disabled) {
-                                    previewBtn.click();
-                                }
-                            }, 300);
+                            // Navigation happens automatically inside processImage()
+                            // No need to click preview button - we auto-navigate to editor page
                         } catch (err) {
                             console.error('Processing error:', err);
                             alert('Image loaded but processing failed: ' + err.message);
                             // Keep the raw image visible
                             processedImageData = objectURL;
-                            document.getElementById('downloadBtn').disabled = false;
+                            document.getElementById('loadingOverlay').style.display = 'none';
                         }
-                        document.getElementById('loadingOverlay').style.display = 'none';
                     }, 100);
                 };
                 
@@ -2859,6 +3477,16 @@
         function processImage(img) {
             console.log('Starting image processing...', img.width, img.height);
             
+            // SAVE ORIGINAL IMAGE TO GLOBAL VARIABLE FOR EDITOR
+            // Compress to JPEG quality 0.85 to fit in localStorage (5MB limit)
+            const originalCanvas = document.createElement('canvas');
+            const originalCtx = originalCanvas.getContext('2d');
+            originalCanvas.width = img.width;
+            originalCanvas.height = img.height;
+            originalCtx.drawImage(img, 0, 0);
+            originalImageData = originalCanvas.toDataURL('image/jpeg', 0.85); // JPEG at 85% quality
+            console.log('Original image saved (compressed), length:', originalImageData.length);
+            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
@@ -2877,7 +3505,7 @@
             console.log('Image data extracted:', data.length, 'values');
             
             // Get settings (use default threshold since main page control removed)
-            const threshold = 128; // Default threshold
+            const threshold = 248; // Default threshold - high value to capture light roads from streets-v12
             const edgeDetection = edgeDetectionEnabled;
             const invert = invertColorsEnabled;
             
@@ -3088,22 +3716,65 @@
             // Show the canvas
             previewCanvas.style.display = 'block';
             
-            // Enable buttons
-            document.getElementById('downloadBtn').disabled = false;
-            document.getElementById('openPreviewBtn').disabled = false;
-            
             document.getElementById('loadingOverlay').style.display = 'none';
             
             console.log('Processing complete!');
             
-            // Navigate to Professional Editor
-            // Store image data and metadata in localStorage
-            localStorage.setItem('mapitImageData', processedImageData);
-            localStorage.setItem('mapitMetadata', JSON.stringify({
-                location: document.getElementById('searchInput').value || 'Unknown',
-                timestamp: Date.now(),
-                dimensions: `${canvas.width}×${canvas.height}`
-            }));
+            // Navigate to Professional Editor - happens automatically
+            // Store ORIGINAL unprocessed image and metadata in localStorage
+            try {
+                localStorage.setItem('mapitImageData', originalImageData); // Use original, not processed
+                
+                // Build enhanced metadata safely
+                const metadata = {
+                    location: selectedLocationName || document.getElementById('searchInput')?.value || (map ? `${map.getCenter().lat.toFixed(4)}, ${map.getCenter().lng.toFixed(4)}` : 'Unknown'),
+                    timestamp: Date.now(),
+                    dimensions: `${canvas.width}×${canvas.height}`
+                };
+                
+                // Add optional fields if available
+                try {
+                    if (boundingBox && typeof boundingBox.getSouthWest === 'function') {
+                        metadata.bbox = [
+                            boundingBox.getSouthWest().lng,
+                            boundingBox.getSouthWest().lat,
+                            boundingBox.getNorthEast().lng,
+                            boundingBox.getNorthEast().lat
+                        ];
+                    }
+                } catch (e) {
+                    console.log('Could not get bbox:', e);
+                }
+                
+                try {
+                    const styleSelect = document.getElementById('styleSelect');
+                    if (styleSelect) {
+                        metadata.style = styleSelect.value;
+                    } else {
+                        metadata.style = 'streets-v12';
+                    }
+                } catch (e) {
+                    metadata.style = 'streets-v12';
+                }
+                
+                try {
+                    if (map && typeof map.getZoom === 'function') {
+                        metadata.zoom = map.getZoom();
+                        metadata.center = map.getCenter();
+                    }
+                } catch (e) {
+                    console.log('Could not get map info:', e);
+                }
+                
+                localStorage.setItem('mapitMetadata', JSON.stringify(metadata));
+                console.log('Metadata saved:', metadata);
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+                alert('Failed to save image data: ' + e.message);
+                return;
+            }
+            
+            console.log('Navigating to editor page...');
             
             // Navigate to editor page
             window.location.href = '/editor.html';
@@ -3433,19 +4104,8 @@
             return warpCanvas;
         }
 
-        // Download image
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            if (!processedImageData) return;
-            
-            const link = document.createElement('a');
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-            link.download = `map-engraving-${timestamp}.png`;
-            link.href = processedImageData;
-            link.click();
-        });
-
         // Modal Controls
-        document.getElementById('openPreviewBtn').addEventListener('click', function() {
+        document.getElementById('openPreviewBtn')?.addEventListener('click', function() {
             if (!originalImageElement) return;
             
             // Reset zoom and pan
@@ -3867,8 +4527,6 @@
                 
                 // Reset processed image
                 processedImageData = null;
-                document.getElementById('downloadBtn').disabled = true;
-                document.getElementById('openPreviewBtn').disabled = true;
                 
                 // Visual feedback
                 const btn = this;

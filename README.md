@@ -1,4 +1,4 @@
-# 🗺️ mapit - Map Engraving Generator
+# 🗺️ maprdy - Map to Laser Ready
 
 **Generate laser engraving-ready map images from any location worldwide.**
 
@@ -9,15 +9,15 @@ Perfect for creating custom gifts, artwork, and personalized engravings on glass
 ## 🚀 Quick Start
 
 **Option 1: Use Hosted Version** (Recommended)
-- Visit the live app (deployment pending)
+- Visit [maprdy.com](https://maprdy.com)
 - No installation required!
 
 **Option 2: Run Locally**
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/mapit.git
-cd mapit
+git clone https://github.com/yourusername/maprdy.git
+cd maprdy
 
 # 2. Install dependencies
 npm install

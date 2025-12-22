@@ -1,8 +1,8 @@
-# mapit - User Guide
+# maprdy - User Guide
 
-## What is mapit?
+## What is maprdy?
 
-**mapit** is a web-based tool for creating laser engraving-ready map images. Generate high-contrast, customizable map images optimized for engraving on glass, wood, metal, and other materials.
+**maprdy** (maprdy.com) is a web-based tool for creating laser engraving-ready map images. Generate high-contrast, customizable map images optimized for engraving on glass, wood, metal, and other materials.
 
 ### Key Capabilities
 - Search and select any location worldwide

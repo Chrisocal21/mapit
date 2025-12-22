@@ -1,7 +1,7 @@
 {
-  "name": "mapit",
+  "name": "maprdy",
   "version": "1.0.0",
-  "description": "Map Engraving Image Generator",
+  "description": "maprdy - Map to Laser Ready",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

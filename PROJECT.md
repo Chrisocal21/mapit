@@ -1,4 +1,4 @@
-﻿# mapit - Map Engraving Generator
+﻿# maprdy - Map to Laser Ready
 
 <div align="center">
 

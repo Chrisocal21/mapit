@@ -35,7 +35,9 @@ export function processImage(img, options = {}) {
         envelopeWarp = 0,
         thickenText = false,
         thickenAmount = 2,
-        removeFerryLines = false
+        removeFerryLines = false,
+        thickenCoastlines = false,
+        coastlineAmount = 2
     } = options;
 
     console.log('Starting image processing...', img.width, img.height);
@@ -226,6 +228,60 @@ export function processImage(img, options = {}) {
         }
     }
     
+    // Black Text with white box - works independently
+    if (blackText && !invert) {
+        console.log('Applying black text with white box outline');
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // Create text mask - detect black pixels (text)
+        const textMask = new Uint8Array(data.length / 4);
+        for (let i = 0; i < data.length; i += 4) {
+            // Black pixels are text
+            textMask[i / 4] = (data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0) ? 1 : 0;
+        }
+        
+        // Create white boxes around text
+        const dilatedMask = new Uint8Array(textMask.length);
+        const padding = 3; // pixels of white padding
+        
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const idx = y * width + x;
+                
+                if (textMask[idx] === 1) {
+                    for (let dy = -padding; dy <= padding; dy++) {
+                        for (let dx = -padding; dx <= padding; dx++) {
+                            const nx = x + dx;
+                            const ny = y + dy;
+                            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                                dilatedMask[ny * width + nx] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Fill dilated areas with white
+        for (let i = 0; i < data.length; i += 4) {
+            if (dilatedMask[i / 4] === 1) {
+                data[i] = 255;
+                data[i + 1] = 255;
+                data[i + 2] = 255;
+            }
+        }
+        
+        // Put black text back on top
+        for (let i = 0; i < data.length; i += 4) {
+            if (textMask[i / 4] === 1) {
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+            }
+        }
+    }
+    
     // Apply thickening (morphological dilation) if enabled
     if (thickenText) {
         console.log('Applying text thickening:', thickenAmount + 'px');
@@ -260,13 +316,19 @@ export function processImage(img, options = {}) {
         ctx.putImageData(imageData, 0, 0);
     }
     
+    // Thicken coastlines/water boundaries if enabled
+    if (thickenCoastlines) {
+        console.log('Thickening coastlines with amount:', coastlineAmount);
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const thickenedData = applyDilation(imageData, canvas.width, canvas.height, coastlineAmount);
+        ctx.putImageData(thickenedData, 0, 0);
+        imageData = thickenedData;
+    }
+    
     console.log('Processing complete!');
     
-    // Convert to data URL for download
-    const dataUrl = canvas.toDataURL('image/png');
-    console.log('Converted to data URL, length:', dataUrl.length);
-    
-    return { canvas, dataUrl };
+    // Return the processed imageData for use in editor
+    return imageData;
 }
 
 /**
