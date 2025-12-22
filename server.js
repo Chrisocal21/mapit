@@ -17,6 +17,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Health check endpoint (for monitoring & deployment verification)
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        version: require('./package.json').version,
+        services: {
+            mapbox: !!process.env.MAPBOX_TOKEN,
+            openai: !!process.env.OPENAI_API_KEY
+        }
+    });
+});
+
 // Serve index.html
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
