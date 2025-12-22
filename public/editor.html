@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>maprdy - Professional Editor</title>
+    <meta name="description" content="Professional map editor for laser engraving. Convert any map to laser-ready artwork with AI optimization.">
+    <meta property="og:title" content="maprdy - Map to Laser Ready">
+    <meta property="og:description" content="Professional map editor for laser engraving. Convert any map to laser-ready artwork.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maprdy.com">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" type="image/svg+xml" href="maprdylogo.svg">
     <link rel="stylesheet" href="css/editor.css">
 </head>
@@ -11,7 +17,7 @@
     <!-- Adobe-Style Menu Bar -->
     <div class="menu-bar">
         <div class="menu-bar-left">
-            <div class="logo">
+            <div class="logo" id="homeBtn" style="cursor: pointer; transition: opacity 0.2s;">
                 <img src="maprdylogo.svg" width="20" height="17" alt="maprdy" style="display: block;">
                 <span style="letter-spacing: 0.15em; font-weight: 500; font-size: 13px;">M A P R D Y</span>
             </div>
@@ -104,6 +110,7 @@
             </div>
         </div>
         <div class="menu-bar-right">
+            <span style="font-size: 11px; color: var(--text-muted); margin-right: 16px; opacity: 0.6;">v0.7</span>
             <div id="processingIndicator" class="processing-indicator" style="display: none;">
                 <div class="spinner"></div>
                 <span>Processing...</span>

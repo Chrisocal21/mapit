@@ -383,7 +383,28 @@ function setupEventListeners() {
     // Menu Bar Actions
     document.getElementById('saveBtn').addEventListener('click', saveImage);
     document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
-    document.getElementById('backToMapBtn').addEventListener('click', () => window.location.href = '/');
+    
+    // Home button (logo click)
+    document.getElementById('homeBtn').addEventListener('click', () => {
+        if (confirm('Return to map selection? Any unsaved changes will be lost.')) {
+            window.location.href = '/';
+        }
+    });
+    
+    document.getElementById('homeBtn').addEventListener('mouseenter', function() {
+        this.style.opacity = '0.7';
+    });
+    
+    document.getElementById('homeBtn').addEventListener('mouseleave', function() {
+        this.style.opacity = '1';
+    });
+    
+    document.getElementById('backToMapBtn').addEventListener('click', () => {
+        if (confirm('Return to map selection? Any unsaved changes will be lost.')) {
+            window.location.href = '/';
+        }
+    });
+    
     document.getElementById('newMapBtn').addEventListener('click', () => {
         if (confirm('Start a new map? Current work will be lost.')) {
             localStorage.removeItem('mapitImageData');
