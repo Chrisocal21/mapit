@@ -248,8 +248,14 @@ app.get('*', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log('Mapbox token configured:', !!process.env.MAPBOX_TOKEN);
-    console.log('OpenAI configured:', !!openai);
-});
+// Only start server if not in serverless environment (Vercel)
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+        console.log('Mapbox token configured:', !!process.env.MAPBOX_TOKEN);
+        console.log('OpenAI configured:', !!openai);
+    });
+}
+
+// Export for Vercel serverless
+module.exports = app;
