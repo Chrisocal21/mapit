@@ -762,7 +762,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             align-items: center;
             justify-content: center;
@@ -775,15 +775,13 @@
         }
 
         .preview-modal-content {
-            background: #2a2a2a;
+            background: white;
             border-radius: 8px;
             max-width: 95vw;
             max-height: 95vh;
             width: 1400px;
             display: flex;
             overflow: hidden;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
-            border: 1px solid #3a3a3a;
         }
 
         .preview-left {
@@ -792,7 +790,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #1e1e1e;
+            background: #f5f5f5;
             padding: 20px;
             overflow: auto;
         }
@@ -800,10 +798,9 @@
         .preview-canvas-large {
             max-width: 100%;
             max-height: calc(95vh - 120px);
-            border: 2px solid #444;
-            background: #2a2a2a;
+            border: 2px solid #ddd;
+            background: white;
             cursor: grab;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         
         .preview-canvas-large:active {
@@ -814,8 +811,7 @@
             width: 350px;
             padding: 20px;
             overflow-y: auto;
-            background: #2a2a2a;
-            color: #e0e0e0;
+            background: white;
         }
 
         .modal-header {
@@ -824,13 +820,13 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #3a3a3a;
+            border-bottom: 2px solid #e0e0e0;
         }
 
         .modal-header h2 {
             margin: 0;
             font-size: 1.5rem;
-            color: #e0e0e0;
+            color: #333;
         }
 
         .close-modal {
@@ -838,7 +834,7 @@
             border: none;
             font-size: 2rem;
             cursor: pointer;
-            color: #888;
+            color: #666;
             padding: 0;
             width: 40px;
             height: 40px;
@@ -849,29 +845,25 @@
         }
 
         .close-modal:hover {
-            background: #3a3a3a;
-            color: #fff;
+            background: #f0f0f0;
+            color: #333;
         }
 
         .modal-control-section {
             margin-bottom: 20px;
-            padding: 15px;
-            background: #333;
-            border-radius: 6px;
-            border-left: 3px solid #555;
         }
 
         .modal-control-section h3 {
             font-size: 1rem;
             margin: 0 0 10px 0;
-            color: #e0e0e0;
+            color: #333;
             font-weight: 600;
         }
 
         .btn-modal-primary {
             width: 100%;
             padding: 12px;
-            background: #4a90e2;
+            background: #28a745;
             color: white;
             border: none;
             border-radius: 4px;
@@ -879,128 +871,10 @@
             cursor: pointer;
             font-weight: 600;
             margin-top: 10px;
-            transition: all 0.2s;
         }
 
         .btn-modal-primary:hover {
-            background: #357abd;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
-        }
-
-        .btn-modal-primary:active {
-            transform: translateY(0);
-        }
-
-        /* Professional Editor Dark Theme Controls */
-        .control-group {
-            margin-bottom: 15px;
-        }
-
-        .control-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.875rem;
-            color: #b0b0b0;
-            font-weight: 500;
-        }
-
-        .control-group select,
-        .control-group input[type="number"],
-        .control-group input[type="range"] {
-            width: 100%;
-            padding: 8px 10px;
-            background: #3a3a3a;
-            color: #e0e0e0;
-            border: 1px solid #555;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .control-group select:focus,
-        .control-group input:focus {
-            outline: none;
-            border-color: #4a90e2;
-            background: #454545;
-        }
-
-        .control-group input[type="range"] {
-            padding: 0;
-            height: 6px;
-            background: #3a3a3a;
-            cursor: pointer;
-        }
-
-        .control-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            background: #4a90e2;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-
-        .control-group input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            background: #4a90e2;
-            cursor: pointer;
-            border-radius: 50%;
-            border: none;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: #333;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .checkbox-group:hover {
-            background: #3a3a3a;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            cursor: pointer;
-            width: 18px;
-            height: 18px;
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            cursor: pointer;
-            flex: 1;
-            color: #e0e0e0;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            font-size: 0.75rem;
-            border-radius: 3px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-
-        .badge.new {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .badge.experimental {
-            background: #ffa500;
-            color: white;
-        }
-
-        .badge.ai {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #218838;
         }
 
         @media (max-width: 1024px) {
@@ -1382,6 +1256,28 @@
                                     <span class="toolbar-badge green" id="squareIndicator" style="display: none;">Square</span>
                                 </div>
                             </div>
+                            <div class="menu-section">
+                                <div class="menu-section-title">Contrast</div>
+                                <div class="menu-control">
+                                    <label>Threshold</label>
+                                    <input type="number" id="contrastThreshold" min="0" max="255" value="215" style="width: 80px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Effects Menu -->
+                    <div class="menu-item">
+                        <button type="button" class="menu-button" id="effectsMenuBtn">
+                            Effects ▾
+                        </button>
+                        <div class="menu-dropdown" id="effectsMenu">
+                            <div class="menu-section">
+                                <button type="button" class="toolbar-button" id="lineArtBtn" title="Laser Mode" style="width: 100%; margin-bottom: 0.5rem;">Laser</button>
+                                <button type="button" class="toolbar-button" id="edgeDetectionBtn" title="Edge Detection" style="width: 100%; margin-bottom: 0.5rem;">Edge Detection</button>
+                                <button type="button" class="toolbar-button" id="invertColorsBtn" title="Invert Colors" style="width: 100%; margin-bottom: 0.5rem;">Invert Colors</button>
+                                <button type="button" class="toolbar-button" id="envelopeWarpBtn" title="Envelope Warp" style="width: 100%;">Warp: <span id="warpValue">Off</span></button>
+                            </div>
                         </div>
                     </div>
 
@@ -1440,9 +1336,7 @@
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
                             </svg>
                         </button>
-                        <button type="button" class="toolbar-button" id="generateBtn" style="background: #4a90e2; border-color: #4a90e2; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600;">
-                            🎨 Generate & Edit
-                        </button>
+                        <button type="button" class="toolbar-button" id="generateBtn" style="background: #4a90e2; border-color: #4a90e2; padding: 0.5rem 1rem;">Generate</button>
                         <button type="button" class="toolbar-button" id="downloadBtn" disabled style="padding: 0.5rem 1rem;">Download</button>
                         <button type="button" class="toolbar-button" id="openPreviewBtn" disabled style="padding: 0.5rem 1rem;">Preview</button>
                     </div>
@@ -1486,18 +1380,12 @@
             </div>
             <div class="preview-right">
                 <div class="modal-header">
-                    <h2>🎨 Professional Editor</h2>
+                    <h2>Preview & Adjust</h2>
                     <button class="close-modal" id="closeModal">&times;</button>
                 </div>
 
-                <div style="background: #2a2a2a; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; border-left: 3px solid #4a90e2;">
-                    <div style="font-size: 0.875rem; color: #e0e0e0;">
-                        <strong>💡 Tip:</strong> All controls update the preview in real-time. Experiment to find the perfect settings for your engraving!
-                    </div>
-                </div>
-
                 <div class="modal-control-section">
-                    <h3>Output Settings</h3>
+                    <h3>Image Settings</h3>
                     <div class="control-group">
                         <label for="modalImageSize">Output Size (px)</label>
                         <select id="modalImageSize">
@@ -2610,6 +2498,35 @@
             this.style.background = isZoomLocked ? '#4a90e2' : '';
         });
 
+        // Envelope Warp toggle button
+        document.getElementById('envelopeWarpBtn').addEventListener('click', function() {
+            currentEnvelopeWarp = (currentEnvelopeWarp + 1) % 5;
+            
+            const warpValueEl = document.getElementById('warpValue');
+            const button = document.getElementById('envelopeWarpBtn');
+            
+            if (currentEnvelopeWarp === 0) {
+                warpValueEl.textContent = 'Off';
+                button.classList.remove('active');
+            } else {
+                warpValueEl.textContent = '-' + currentEnvelopeWarp + '%';
+                button.classList.add('active');
+            }
+            
+            // Reprocess image if available
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Update threshold value and reprocess if image exists
+        document.getElementById('contrastThreshold').addEventListener('input', function(e) {
+            // Live reprocess if we have an image
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
         // Aspect ratio change handler
         // Check if current selection is square (accounting for Mercator projection)
         function checkIfSquare() {
@@ -2727,6 +2644,87 @@
             updateBoundingBoxInfo();
         }
 
+        // Laser mode button toggle
+        document.getElementById('lineArtBtn').addEventListener('click', function() {
+            laserMode = !laserMode;
+            this.classList.toggle('active', laserMode);
+            this.style.background = laserMode ? '#4a90e2' : '';
+            
+            // Disable edge detection when laser is active
+            if (laserMode) {
+                edgeDetectionEnabled = false;
+                document.getElementById('edgeDetectionBtn').classList.remove('active');
+                document.getElementById('edgeDetectionBtn').style.background = '';
+            }
+            
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+        
+        // Edge detection button toggle
+        document.getElementById('edgeDetectionBtn').addEventListener('click', function() {
+            edgeDetectionEnabled = !edgeDetectionEnabled;
+            this.classList.toggle('active', edgeDetectionEnabled);
+            this.style.background = edgeDetectionEnabled ? '#4a90e2' : '';
+            
+            // Disable lazer when edge detection is active
+            if (edgeDetectionEnabled) {
+                lazerMode = false;
+                document.getElementById('lineArtBtn').classList.remove('active');
+                document.getElementById('lineArtBtn').style.background = '';
+            }
+            
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Black text checkbox toggle
+        document.getElementById('blackTextCheck').addEventListener('change', function() {
+            blackTextEnabled = this.checked;
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Invert colors button toggle
+        document.getElementById('invertColorsBtn').addEventListener('click', function() {
+            invertColorsEnabled = !invertColorsEnabled;
+            this.classList.toggle('active', invertColorsEnabled);
+            this.style.background = invertColorsEnabled ? '#4a90e2' : '';
+            
+            // Invert can work with lazer mode (no longer mutually exclusive)
+            
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
+        // Black text checkbox toggle
+        document.getElementById('blackTextCheck').addEventListener('change', function() {
+            blackTextEnabled = this.checked;
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+        
+        // Black roads checkbox toggle
+        document.getElementById('blackRoadsCheck').addEventListener('change', function() {
+            blackRoadsEnabled = this.checked;
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+        
+        // White water checkbox toggle
+        document.getElementById('whiteWaterCheck').addEventListener('change', function() {
+            whiteWaterEnabled = this.checked;
+            if (originalImageElement) {
+                processImage(originalImageElement);
+            }
+        });
+
         // Generate engraving image
         document.getElementById('generateBtn').addEventListener('click', async function() {
             // Get parameters
@@ -2821,14 +2819,6 @@
                             processImage(img);
                             // Clean up object URL after processing
                             URL.revokeObjectURL(objectURL);
-                            
-                            // Auto-open Professional Editor after generation
-                            setTimeout(() => {
-                                const previewBtn = document.getElementById('openPreviewBtn');
-                                if (previewBtn && !previewBtn.disabled) {
-                                    previewBtn.click();
-                                }
-                            }, 300);
                         } catch (err) {
                             console.error('Processing error:', err);
                             alert('Image loaded but processing failed: ' + err.message);
@@ -2876,8 +2866,8 @@
             let data = imageData.data;
             console.log('Image data extracted:', data.length, 'values');
             
-            // Get settings (use default threshold since main page control removed)
-            const threshold = 128; // Default threshold
+            // Get settings
+            const threshold = parseInt(document.getElementById('contrastThreshold').value);
             const edgeDetection = edgeDetectionEnabled;
             const invert = invertColorsEnabled;
             
@@ -3092,21 +3082,14 @@
             document.getElementById('downloadBtn').disabled = false;
             document.getElementById('openPreviewBtn').disabled = false;
             
+            // Flash preview button to draw attention
+            const previewBtn = document.getElementById('openPreviewBtn');
+            previewBtn.classList.add('flash');
+            setTimeout(() => previewBtn.classList.remove('flash'), 1800);
+            
             document.getElementById('loadingOverlay').style.display = 'none';
             
             console.log('Processing complete!');
-            
-            // Navigate to Professional Editor
-            // Store image data and metadata in localStorage
-            localStorage.setItem('mapitImageData', processedImageData);
-            localStorage.setItem('mapitMetadata', JSON.stringify({
-                location: document.getElementById('searchInput').value || 'Unknown',
-                timestamp: Date.now(),
-                dimensions: `${canvas.width}×${canvas.height}`
-            }));
-            
-            // Navigate to editor page
-            window.location.href = '/editor.html';
         }
 
         // Remove ferry lines and dashed routes by detecting small isolated segments
@@ -3455,6 +3438,9 @@
             document.getElementById('zoomLevel').textContent = '100%';
             
             // Sync settings to modal
+            document.getElementById('modalContrastThreshold').value = document.getElementById('contrastThreshold').value;
+            document.getElementById('modalContrastThresholdInput').value = document.getElementById('contrastThreshold').value;
+            document.getElementById('modalThresholdValue').textContent = document.getElementById('contrastThreshold').value;
             document.getElementById('modalEdgeDetection').checked = edgeDetectionEnabled;
             document.getElementById('modalInvertColors').checked = invertColorsEnabled;
             document.getElementById('modalImageSize').value = document.getElementById('imageSize').value;
@@ -3613,27 +3599,6 @@
         document.getElementById('thickenAmount').addEventListener('input', function(e) {
             const value = e.target.value;
             document.getElementById('thickenAmountValue').textContent = value;
-            if (originalImageElement) {
-                processImageForModal(originalImageElement);
-            }
-        });
-
-        document.getElementById('blackTextCheck').addEventListener('change', function() {
-            blackTextEnabled = this.checked;
-            if (originalImageElement) {
-                processImageForModal(originalImageElement);
-            }
-        });
-
-        document.getElementById('blackRoadsCheck').addEventListener('change', function() {
-            blackRoadsEnabled = this.checked;
-            if (originalImageElement) {
-                processImageForModal(originalImageElement);
-            }
-        });
-
-        document.getElementById('whiteWaterCheck').addEventListener('change', function() {
-            whiteWaterEnabled = this.checked;
             if (originalImageElement) {
                 processImageForModal(originalImageElement);
             }

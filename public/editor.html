@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mapit - Professional Editor</title>
+    <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+    <!-- Adobe-Style Menu Bar -->
+    <div class="menu-bar">
+        <div class="menu-bar-left">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 32 32">
+                    <rect width="32" height="32" rx="6" fill="#4a90e2"/>
+                    <path d="M8 12 L16 8 L24 12 L16 16 Z" fill="white"/>
+                    <path d="M8 16 L16 12 L16 24 L8 20 Z" fill="white" opacity="0.8"/>
+                    <path d="M24 16 L16 12 L16 24 L24 20 Z" fill="white" opacity="0.6"/>
+                </svg>
+                <span>mapit</span>
+            </div>
+            <div class="menu-items">
+                <div class="menu-item">
+                    <button class="menu-btn">File</button>
+                    <div class="dropdown">
+                        <button id="newMapBtn">New Map</button>
+                        <button id="saveBtn">Save Image</button>
+                        <button id="copyBtn">Copy to Clipboard</button>
+                        <div class="divider"></div>
+                        <button id="backToMapBtn">Back to Map Selection</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn">Edit</button>
+                    <div class="dropdown">
+                        <button id="undoBtn" disabled>Undo <span class="shortcut">Ctrl+Z</span></button>
+                        <button id="redoBtn" disabled>Redo <span class="shortcut">Ctrl+Y</span></button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn">View</button>
+                    <div class="dropdown">
+                        <button id="zoomInBtn">Zoom In <span class="shortcut">+</span></button>
+                        <button id="zoomOutBtn">Zoom Out <span class="shortcut">-</span></button>
+                        <button id="zoomFitBtn">Fit to Window <span class="shortcut">0</span></button>
+                        <div class="divider"></div>
+                        <button id="toggleToolbarBtn">Toggle Toolbar</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn">Image</button>
+                    <div class="dropdown">
+                        <button id="resetBtn">Reset to Original</button>
+                        <button id="regenerateBtn">Regenerate from Map</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn">AI</button>
+                    <div class="dropdown">
+                        <button id="aiSuggestBtn">Get Suggestions</button>
+                        <button id="aiOptimizeBtn">Auto-Optimize</button>
+                        <button id="aiDescribeBtn">Describe Map</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn">Help</button>
+                    <div class="dropdown">
+                        <button id="keyboardShortcutsBtn">Keyboard Shortcuts</button>
+                        <button id="aboutBtn">About mapit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-bar-right">
+            <div id="processingIndicator" class="processing-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <span>Processing...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="editor-container">
+        <!-- Canvas Area (Center) -->
+        <div class="canvas-area">
+            <canvas id="editorCanvas"></canvas>
+            <div id="canvasOverlay" class="canvas-overlay">
+                <div class="zoom-controls">
+                    <button id="zoomInControl" title="Zoom In (+)">+</button>
+                    <span id="zoomLevel">100%</span>
+                    <button id="zoomOutControl" title="Zoom Out (-)">−</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Toolbar -->
+        <div class="right-toolbar">
+            <div class="toolbar-section">
+                <div class="section-header">
+                    <h3>🎨 Tools</h3>
+                    <button class="collapse-btn">−</button>
+                </div>
+                <div class="section-content">
+                    <div class="control-group">
+                        <label for="contrastSlider">Contrast Threshold</label>
+                        <input type="range" id="contrastSlider" min="0" max="255" value="128">
+                        <input type="number" id="contrastInput" min="0" max="255" value="128" class="inline-input">
+                    </div>
+                    
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="edgeDetectionCheck">
+                        <label for="edgeDetectionCheck">Edge Detection</label>
+                    </div>
+                    
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="invertCheck">
+                        <label for="invertCheck">Invert Colors</label>
+                    </div>
+                    
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="laserCheck">
+                        <label for="laserCheck">Laser Mode</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <div class="section-header">
+                    <h3>✨ Advanced</h3>
+                    <button class="collapse-btn">−</button>
+                </div>
+                <div class="section-content">
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="thickenCheck">
+                        <label for="thickenCheck">Thicken Text & Lines</label>
+                    </div>
+                    <div class="control-group" id="thickenControls" style="display: none;">
+                        <label for="thickenSlider">Amount (px)</label>
+                        <input type="range" id="thickenSlider" min="0.5" max="5" step="0.5" value="2">
+                        <input type="number" id="thickenInput" min="0.5" max="5" step="0.5" value="2" class="inline-input">
+                    </div>
+                    
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="blackTextCheck">
+                        <label for="blackTextCheck">Black Text with Box</label>
+                    </div>
+                    
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="blackRoadsCheck">
+                        <label for="blackRoadsCheck">Black Roads</label>
+                    </div>
+                    
+                    <div class="control-group checkbox-item">
+                        <input type="checkbox" id="whiteWaterCheck">
+                        <label for="whiteWaterCheck">White Water</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <div class="section-header">
+                    <h3>🤖 AI Suggestions</h3>
+                    <button class="collapse-btn">−</button>
+                </div>
+                <div class="section-content">
+                    <div id="aiPanel" class="ai-panel">
+                        <p class="ai-placeholder">Click "Get Suggestions" to receive AI-powered optimization tips for your map.</p>
+                        <div id="aiSuggestions"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <div class="section-header">
+                    <h3>📐 Properties</h3>
+                    <button class="collapse-btn">−</button>
+                </div>
+                <div class="section-content">
+                    <div class="property-item">
+                        <span class="property-label">Dimensions:</span>
+                        <span id="imageDimensions">--</span>
+                    </div>
+                    <div class="property-item">
+                        <span class="property-label">File Size:</span>
+                        <span id="fileSize">--</span>
+                    </div>
+                    <div class="property-item">
+                        <span class="property-label">Format:</span>
+                        <span>PNG</span>
+                    </div>
+                    <div class="property-item">
+                        <span class="property-label">Location:</span>
+                        <span id="mapLocation">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span id="statusMessage">Ready</span>
+        </div>
+        <div class="status-right">
+            <span id="statusZoom">100%</span>
+            <span class="divider">|</span>
+            <span id="statusDimensions">--</span>
+        </div>
+    </div>
+
+    <script src="js/canvas.js"></script>
+    <script src="js/editor.js"></script>
+</body>
+</html>
