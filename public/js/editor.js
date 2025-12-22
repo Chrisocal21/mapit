@@ -366,11 +366,15 @@ function setupEventListeners() {
             
             const content = header.nextElementSibling;
             const btn = header.querySelector('.collapse-btn');
-            if (content.style.display === 'none') {
+            const isHidden = content.style.display === 'none';
+            
+            if (isHidden) {
                 content.style.display = 'block';
+                setTimeout(() => content.style.maxHeight = '2000px', 10);
                 btn.textContent = '−';
             } else {
-                content.style.display = 'none';
+                content.style.maxHeight = '0';
+                setTimeout(() => content.style.display = 'none', 300);
                 btn.textContent = '+';
             }
         });
@@ -390,6 +394,44 @@ function setupEventListeners() {
     
     document.getElementById('undoBtn').addEventListener('click', undo);
     document.getElementById('redoBtn').addEventListener('click', redo);
+    
+    // Floating Action Button
+    const fabMain = document.getElementById('fabMain');
+    const fabMenu = document.getElementById('fabMenu');
+    let fabOpen = false;
+    
+    fabMain.addEventListener('click', () => {
+        fabOpen = !fabOpen;
+        fabMenu.style.display = fabOpen ? 'flex' : 'none';
+        fabMain.style.transform = fabOpen ? 'rotate(135deg)' : '';
+    });
+    
+    document.getElementById('fabSave').addEventListener('click', () => {
+        saveImage();
+        fabMain.click();
+    });
+    
+    document.getElementById('fabUndo').addEventListener('click', () => {
+        undo();
+        fabMain.click();
+    });
+    
+    document.getElementById('fabRedo').addEventListener('click', () => {
+        redo();
+        fabMain.click();
+    });
+    
+    document.getElementById('fabZoomFit').addEventListener('click', () => {
+        setZoom(1);
+        fabMain.click();
+    });
+    
+    // Close FAB menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (fabOpen && !e.target.closest('.fab-container')) {
+            fabMain.click();
+        }
+    });
     
     document.getElementById('zoomInBtn').addEventListener('click', () => adjustZoom(0.1));
     document.getElementById('zoomOutBtn').addEventListener('click', () => adjustZoom(-0.1));
@@ -639,7 +681,10 @@ function saveImage() {
     link.href = dataURL;
     link.click();
     setStatus('Image saved!');
-    showToast('PNG image downloaded successfully', 'success', 'Saved');
+    showToast('PNG image downloaded successfully', 'success', '✓ Saved');
+    
+    // Save to recent files
+    addToRecentFiles();
 }
 
 function copyToClipboard() {
@@ -649,10 +694,10 @@ function copyToClipboard() {
             new ClipboardItem({ 'image/png': blob })
         ]).then(() => {
             setStatus('Copied to clipboard!');
-            showToast('Image copied to clipboard', 'success', 'Copied');
+            showToast('Image copied to clipboard', 'success', '✓ Copied');
         }).catch(err => {
             showError('Failed to copy: ' + err.message);
-            showToast('Failed to copy to clipboard', 'error', 'Error');
+            showToast('Failed to copy to clipboard', 'error', '✕ Error');
         });
     });
 }
@@ -1424,8 +1469,11 @@ function showPreferences_old() {
 // ==========================================
 
 function showProcessing(show) {
-    document.getElementById('processingIndicator').style.display = show ? 'flex' : 'none';
-
+    const indicator = document.getElementById('processingIndicator');
+    const overlay = document.getElementById('loadingOverlay');
+    
+    if (indicator) indicator.style.display = show ? 'flex' : 'none';
+    if (overlay) overlay.style.display = show ? 'flex' : 'none';
 }
 
 function updateStatusBar() {
@@ -2167,5 +2215,41 @@ function loadSectionOrder() {
         console.log('Section order restored:', order);
     } catch (e) {
         console.error('Failed to restore section order:', e);
+    }
+}
+
+// ============================================================================
+// RECENT FILES MANAGEMENT
+// ============================================================================
+
+function addToRecentFiles() {
+    try {
+        const recentFiles = JSON.parse(localStorage.getItem('maprdyRecentFiles') || '[]');
+        const canvas = document.getElementById('editorCanvas');
+        const thumbnail = canvas.toDataURL('image/png', 0.1); // Low quality thumbnail
+        
+        const fileData = {
+            timestamp: Date.now(),
+            location: document.getElementById('mapLocation').textContent || 'Unknown',
+            dimensions: document.getElementById('imageDimensions').textContent,
+            thumbnail: thumbnail.substring(0, 10000) // Limit size
+        };
+        
+        // Add to beginning, keep only last 5
+        recentFiles.unshift(fileData);
+        if (recentFiles.length > 5) recentFiles.pop();
+        
+        localStorage.setItem('maprdyRecentFiles', JSON.stringify(recentFiles));
+    } catch (e) {
+        console.error('Failed to save to recent files:', e);
+    }
+}
+
+function loadRecentFiles() {
+    try {
+        const recentFiles = JSON.parse(localStorage.getItem('maprdyRecentFiles') || '[]');
+        return recentFiles;
+    } catch (e) {
+        return [];
     }
 }

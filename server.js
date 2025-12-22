@@ -36,6 +36,11 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
+// Serve editor without .html extension
+app.get('/editor', (req, res) => {
+    res.sendFile(__dirname + '/public/editor.html');
+});
+
 // Proxy endpoint for Mapbox Static Images API
 app.get('/api/mapbox/static', async (req, res) => {
     try {
