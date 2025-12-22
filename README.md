@@ -1,36 +1,69 @@
-# 🗺️ Map Engraving Image Generator
+# 🗺️ mapit - Map Engraving Generator
 
-A web application for generating laser engraving-ready map images. Select any location, adjust the bounding box, and download high-contrast black/white PNG images optimized for glass laser engraving.
+**Generate laser engraving-ready map images from any location worldwide.**
+
+Perfect for creating custom gifts, artwork, and personalized engravings on glass, wood, or metal.
+
+---
 
 ## 🚀 Quick Start
 
-1. **Get a Mapbox API Token**
-   - Sign up for free at [mapbox.com](https://account.mapbox.com/)
-   - Create a new token with default public scopes
-   - Free tier includes 50,000 requests/month
+**Option 1: Use Hosted Version** (Recommended)
+- Visit the live app (deployment pending)
+- No installation required!
 
-2. **Open the Application**
-   - Open `index.html` in any modern web browser
-   - Or deploy to Cloudflare Pages / GitHub Pages
+**Option 2: Run Locally**
 
-3. **Use the App**
-   - Enter your Mapbox API token in the control panel
-   - Search for a location or pan the map
-   - Adjust the blue rectangle to frame your desired area
-   - Click "Generate Engraving Image"
-   - Download your processed PNG
+```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/mapit.git
+cd mapit
 
-## ✨ Features
+# 2. Install dependencies
+npm install
 
-- **Interactive Map**: Pan, zoom, and search for any location worldwide
-- **Adjustable Selection**: Drag and resize the bounding box to capture exactly what you need
-- **High-Contrast Processing**: Automatic conversion to black/white for optimal engraving
-- **Multiple Styles**: Choose from Light, Dark, Streets, or Outdoors map styles
-- **Edge Detection**: Optional edge enhancement for detailed street maps
-- **No Server Required**: 100% client-side processing
-- **Mobile Friendly**: Works on desktop, tablet, and phone
+# 3. Create .env file (copy from .env.example)
+cp .env.example .env
 
-## 🎛️ Settings Explained
+# 4. Add your API keys to .env
+MAPBOX_TOKEN=your_mapbox_token_here
+OPENAI_API_KEY=your_openai_key_here  # Optional for AI features
+
+# 5. Start the server
+npm start
+
+# 6. Open browser
+# Visit http://localhost:3000
+```
+
+---
+
+## ✨ Key Features
+
+### 🗺️ Interactive Map Selection
+- **Global Coverage**: Search any location worldwide
+- **Precise Selection**: Draggable bounding box with rotation
+- **Multiple Styles**: Light, Dark, Streets, Outdoors, Laser
+
+### 🎨 Professional Editor
+- **Live Preview**: See changes in real-time
+- **Dark Theme**: Adobe/Lightburn-inspired professional UI
+- **Advanced Controls**: Contrast, invert, edge detection, thickening
+- **Canvas Processing**: All editing client-side (fast & free)
+
+### 🤖 AI-Powered Features
+- **Smart Search**: Natural language location finding
+- **Optimization Suggestions**: AI recommends best settings
+- **Map Descriptions**: Automatic generation of engraving context
+
+### ⚡ Performance
+- **Budget-Friendly**: ONE API call per map, unlimited edits
+- **Fast Processing**: Client-side Canvas operations
+- **High Resolution**: Up to 2560×2560px for detailed engravings
+
+---
+
+## 🎛️ Usage Guide
 
 ### Map Style
 - **Light Monochrome**: Best for general engraving, clean minimal style
@@ -157,6 +190,74 @@ Simply upload `index.html` to any web server. No server-side processing required
 - Make sure Leaflet editing is enabled (should be by default)
 - Try clicking and dragging the edges or corners
 - Refresh the page if stuck
+
+---
+
+## 🚢 Deployment
+
+### Deploy to Vercel (Recommended - Free)
+
+```bash
+# 1. Install Vercel CLI
+npm install -g vercel
+
+# 2. Login to Vercel
+vercel login
+
+# 3. Deploy
+vercel
+
+# 4. Add environment variables in Vercel dashboard
+# MAPBOX_TOKEN=your_token
+# OPENAI_API_KEY=your_key (optional)
+
+# 5. Deploy to production
+vercel --prod
+```
+
+### Deploy to Other Platforms
+
+**Netlify**: Works with same setup as Vercel  
+**Render**: Use `npm start` as start command  
+**Railway**: Auto-detects Node.js, add env vars in dashboard
+
+---
+
+## 💰 Cost & API Limits
+
+**Mapbox** (Required)
+- Free tier: 50,000 map loads/month
+- Static Images: 750,000 free requests/month
+- **Your cost: $0-5/month**
+
+**OpenAI** (Optional - AI features only)
+- GPT-4o-mini: $0.15 per 1M input tokens
+- Typical usage: ~500 tokens per AI interaction
+- **Your cost: $0-2/month for moderate use**
+
+**Hosting**: $0 (Vercel/Netlify free tier)
+
+**Total monthly cost: $0-7** 🎉
+
+---
+
+## 📄 License
+
+MIT License - Feel free to use for personal or commercial projects!
+
+---
+
+## 🙏 Credits
+
+Built with:
+- [Leaflet.js](https://leafletjs.com/) - Interactive maps
+- [Mapbox](https://www.mapbox.com/) - Map tiles and Static Images API
+- [OpenAI](https://openai.com/) - GPT-4o-mini for AI features
+- [Express.js](https://expressjs.com/) - Lightweight backend
+
+---
+
+**Questions? Issues? Open a GitHub issue or PR!** 🚀
 
 **Search not working**
 - Ensure Mapbox token is entered

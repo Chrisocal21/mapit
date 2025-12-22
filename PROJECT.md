@@ -1,4 +1,4 @@
-# mapit - Map Engraving Generator
+﻿# mapit - Map Engraving Generator
 
 <div align="center">
 
@@ -6,13 +6,14 @@
 
 | Metric | Status | Details |
 |--------|--------|----------|
-| **Overall Progress** | 🟩 99% | Production Ready + AI Enhanced |
+| **Overall Progress** | 🎯 90% | Phase 14 Decision: Framework Migration |
 | **Core Features** | ✅ Complete | All MVP functionality shipped |
 | **AI Integration** | ✅ Complete | GPT-4o-mini powered features |
+| **UX Architecture** | 🔵 Planning | Migrating to React + Adobe-style editor |
 | **Testing** | 🟡 95% | Cross-browser tested, mobile pending |
 | **Deployment** | 🟡 90% | Docs complete, hosting test pending |
-| **Future-Proofing** | 🔵 In Progress | Scalability architecture planned |
-| **Last Updated** | 📅 Dec 21, 2025 | Active development |
+| **Future-Proofing** | ✅ Decided | Vite + React migration approved |
+| **Last Updated** | 📅 Dec 21, 2025 | Framework migration planned |
 
 </div>
 
@@ -26,7 +27,9 @@
 **Tech stack:** Leaflet.js + Mapbox + OpenAI + Canvas API  
 **Cost:** $0-5/month (generous free tiers)  
 
-**🎯 Core Value:** Select location → Adjust area → AI optimize → Download engraving-ready PNG
+**🎯 New Workflow:** Select location → Generate → **Professional Editor** → AI optimize → Export
+
+**Design Philosophy:** Adobe/Lightburn-inspired power tool, not Apple minimalism
 
 ---
 
@@ -48,6 +51,8 @@
 | **10** | Advanced Features | 🟡 90% | Laser mode, AI, presets pending |
 | **11** | AI Integration | ✅ 100% | Natural language search, optimization |
 | **12** | Future-Proofing | 🔵 Planning | Architecture, scaling, monitoring |
+| **13** | UX Restructure | � Phase 1 Complete | Professional editor workflow implemented |
+| **14** | Framework Migration |  Planned | Vite + React + Adobe-style editor |
 
 ### Outstanding Items
 
@@ -196,26 +201,293 @@ const PROCESSING_CONFIG = {
 
 ---
 
-## 👤 User Journey
+## 🎨 UX Architecture & Design Philosophy
+
+### December 21, 2025 - Major Architecture Decision
+
+**Problem Identified:** Controls on main page don't show effect until preview, causing user confusion.
+
+**Solution Chosen:** **Two-Stage Professional Editor Workflow**
+
+#### New User Flow
 
 ```
-🏁 START → 🗺️ View Map → 🔍 Search/Pan → 📏 Adjust Box → ⚙️ Configure → ✨ AI Optimize → 📸 Generate → 🔍 Preview → 📥 Download
+┌─────────────────────────────────────────────────────────────┐
+│  STAGE 1: MAP SELECTION (Simplified)                        │
+│  • Interactive map with location search                     │
+│  • Style picker (light/dark/outdoors/laser)                 │
+│  • Size & aspect ratio selection                             │
+│  • AI-powered search enhancement                             │
+│  • → [GENERATE IMAGE] button                                 │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│  STAGE 2: PROFESSIONAL EDITOR MODE                          │
+│  • Full canvas preview with zoom/pan                         │
+│  • ALL processing controls (live updates)                    │
+│  • AI suggestions panel (contextual)                         │
+│  • Before/after comparison                                   │
+│  • → [DOWNLOAD] [COPY] [REGENERATE] buttons                  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Step-by-Step Flow
+#### Design Language: Adobe/Lightburn Professional
 
-| Step | Action | Details |
-|------|--------|----------|
-| **1. Land** | View default map | NYC centered, interactive controls visible |
-| **2. Search** | Find location | Type address OR pan/zoom OR click to center |
-| **3. Select** | Adjust bounding box | Drag corners/edges to resize area |
-| **4. Configure** | Choose settings | Style (light/dark), size (800-2560px), aspect ratio |
-| **5. AI Assist** | Get recommendations | *Optional:* AI suggests optimal settings for purpose |
-| **6. Generate** | Process image | Fetch map → Apply filters → Show preview |
-| **7. Preview** | Inspect result | Zoom/pan, adjust settings, regenerate if needed |
-| **8. Export** | Download or copy | Save PNG OR copy to clipboard |
+**Inspiration:** Adobe Creative Suite, Lightburn, Figma  
+**NOT:** Apple minimalism (no hiding power user features)
 
-**Average time:** 30 seconds (without AI) | 60 seconds (with AI optimization)
+**Visual Principles:**
+- 🎨 **Dark theme** - Charcoal/slate backgrounds (#2a2a2a, #3a3a3a)
+- 📐 **Visible panels** - Properties, tools, AI suggestions always accessible
+- 🔧 **Professional chrome** - Clear borders, separators, organized sections
+- ⚡ **Power controls** - Sliders + numeric input, keyboard shortcuts
+- 📊 **Status feedback** - Live indicators, processing states visible
+- 🧩 **Modular layout** - Tools | Canvas | Properties panel structure
+
+#### Why This Architecture Wins
+
+| Criteria | Score | Reasoning |
+|----------|-------|-----------|
+| **Budget-Friendly** | ✅✅✅ | ONE API call, unlimited client-side edits |
+| **User-Friendly** | ✅✅✅ | See exactly what each control does instantly |
+| **Clean UX** | ✅✅✅ | Three clear steps: Select → Edit → Export |
+| **Future-Proof** | ✅✅✅ | Easy to add more editor tools/features |
+| **Performance** | ✅✅✅ | No wasted API calls, fast Canvas processing |
+| **Industry Standard** | ✅✅✅ | Matches Photoshop/Figma mental model |
+
+#### Implementation Phases
+
+**Phase 1: Main Page Simplification** ⏳ In Progress
+- Remove all processing controls from main view
+- Keep: Map, Search, Style, Size, Aspect Ratio
+- Enhance "Generate Image" CTA
+
+**Phase 2: Professional Editor Build** 🔵 Next
+- Full-screen editor mode
+- Dark professional theme
+- Panel layout: Tools | Canvas | Properties
+- Live preview with real-time updates
+- AI suggestions contextual panel
+
+**Phase 3: Polish & Enhancement** 🔵 Planned
+- Keyboard shortcuts (Ctrl+Z, Ctrl+S, etc.)
+- Panel resizing/docking capability
+- Professional color scheme refinement
+- Enhanced status bar with live metrics
+
+---
+
+## � Phase 14: Framework Migration & Professional Editor
+
+### December 21, 2025 - Next Evolution Decision
+
+**Current State:** Vanilla HTML/JS/CSS (~3900 lines single file)  
+**User Request:** Separate editor page with Adobe-style layout (File/Edit menus + right toolbar)  
+**Question:** Should we migrate to a modern framework?
+
+### ✅ DECISION: Migrate to **Vite + React + React Router**
+
+#### Rationale
+
+| Factor | Vanilla Multi-Page | **Vite + React** (Chosen) | Vue 3 | Svelte |
+|--------|-------------------|------------------------|-------|--------|
+| **Routing** | Manual, clunky | React Router (standard) | Vue Router | SvelteKit routing |
+| **Component Reuse** | Copy-paste, fragile | Component architecture ✅ | Good | Excellent |
+| **State Management** | Global variables 😱 | Context/Zustand ✅ | Pinia | Stores |
+| **Bundle Size** | N/A | ~45KB gzipped | ~35KB | ~15KB (best) |
+| **Dev Experience** | Slow, manual | Vite HMR (instant) ✅ | Good | Excellent |
+| **Ecosystem** | Limited | Massive (best) ✅ | Good | Growing |
+| **Canvas Libraries** | Manual | react-konva, fabric.js ✅ | Limited | Limited |
+| **UI Components** | DIY everything | react-split-pane, radix-ui ✅ | Vuetify | Limited |
+| **Learning Curve** | Easy | Moderate | Easy | Moderate |
+| **Hosting Cost** | Free | **Free (Vercel/Netlify)** ✅ | Free | Free |
+| **Community** | N/A | Huge (React) ✅ | Large | Growing |
+| **Job Skills** | Basic | Industry standard ✅ | Popular | Niche |
+
+**Why Not Vanilla?**
+- Managing state across pages = nightmare
+- No component reusability
+- Manual DOM manipulation for complex UI
+- Hard to maintain as features grow
+
+**Why Not Vue/Svelte?**
+- Smaller ecosystem for Canvas/image processing
+- Fewer Adobe-style UI component libraries
+- React has more professional desktop app patterns
+
+#### Architecture Vision
+
+**Two Pages:**
+1. **`/` (Home/Map Selection)** - Select location, style, size → Generate
+2. **`/editor` (Professional Editor)** - Adobe-style UI with live Canvas editing
+
+**Adobe-Style Editor Layout:**
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│ File  Edit  View  Image  AI  Help              👤 User    🔔  │  ← MenuBar component
+├────────────────────────────────────────────────┬───────────────┤
+│                                                │ 🎨 TOOLS      │
+│                                                │               │
+│                                                │ Threshold     │
+│                                                │ ▓▓▓▓░░ 128    │
+│                                                │               │
+│              CANVAS COMPONENT                  │ ☑ Invert      │  ← RightToolbar component
+│           (zoom, pan, preview)                 │ ☑ Laser       │
+│                                                │ ☐ Edges       │
+│                                                │               │
+│                                                │ ✨ AI SUGGEST │
+│                                                │ "Increase..." │
+│                                                │               │
+│                                                │ PROPERTIES    │
+│                                                │ 2000x2000px   │
+└────────────────────────────────────────────────┴───────────────┘
+  Status: Processing... | Zoom: 100% | 2000×2000px     ← StatusBar
+```
+
+#### Component Structure
+
+```
+src/
+├── App.jsx (React Router setup)
+├── pages/
+│   ├── MapSelectionPage.jsx      (current index.html → React)
+│   └── EditorPage.jsx             (Adobe-style professional editor)
+├── components/
+│   ├── MenuBar.jsx                (File/Edit/View/Image/AI/Help)
+│   ├── RightToolbar.jsx           (Tools + AI + Properties panels)
+│   ├── CanvasEditor.jsx           (Zoom/pan/preview Canvas)
+│   ├── StatusBar.jsx              (Bottom status, zoom level, dimensions)
+│   ├── MapComponent.jsx           (Leaflet map - reusable)
+│   └── AIPanel.jsx                (Contextual suggestions)
+├── hooks/
+│   ├── useImageProcessing.js     (Canvas processing logic)
+│   └── useMapboxAPI.js            (API integration)
+├── store/
+│   └── editorStore.js             (Zustand: image, settings, history)
+└── utils/
+    ├── canvasProcessing.js        (Pure functions from current code)
+    └── api.js                     (Backend calls)
+```
+
+#### Migration Strategy
+
+**Phase 14.1: Setup & Foundation** (1 day)
+- [ ] Initialize Vite + React project
+- [ ] Setup React Router
+- [ ] Configure Tailwind CSS (faster than custom CSS)
+- [ ] Setup Zustand for state management
+- [ ] Preserve server.js backend (no changes)
+
+**Phase 14.2: Map Selection Page** (1 day)
+- [ ] Migrate Leaflet map to React component
+- [ ] Port search functionality
+- [ ] Port map style/size/aspect controls
+- [ ] Connect to existing backend API
+- [ ] Test generation → navigate to /editor
+
+**Phase 14.3: Professional Editor Page** (2 days)
+- [ ] Build MenuBar component (File/Edit/View/Image/AI/Help)
+- [ ] Build RightToolbar (collapsible panels)
+- [ ] Build CanvasEditor (zoom/pan with react-zoom-pan-pinch)
+- [ ] Port all Canvas processing logic
+- [ ] Wire live preview updates
+- [ ] Build StatusBar component
+
+**Phase 14.4: Polish & Features** (1 day)
+- [ ] Keyboard shortcuts (react-hotkeys-hook)
+- [ ] Panel resizing (react-split-pane)
+- [ ] Undo/Redo (Zustand middleware)
+- [ ] Dark theme refinement
+- [ ] Responsive mobile layout
+
+**Phase 14.5: Testing & Deployment** (1 day)
+- [ ] Cross-browser testing
+- [ ] Mobile testing
+- [ ] Deploy to Vercel (free tier, automatic HTTPS)
+- [ ] Update documentation
+
+**Total Estimated Time:** 5-6 focused days
+
+#### Cost Impact
+
+| Item | Current | After Migration | Savings/Cost |
+|------|---------|----------------|--------------|
+| Hosting | $0 (static) | **$0 (Vercel free tier)** | ✅ No change |
+| Build Time | N/A | ~30s (Vite) | Negligible |
+| Bundle Size | ~50KB (HTML) | ~45KB (React gzipped) | ✅ Similar |
+| Development | Slow, manual | Fast, HMR | ✅ Better DX |
+
+#### Benefits Summary
+
+✅ **Professional multi-page architecture**  
+✅ **Adobe-style UI possible with component libraries**  
+✅ **Maintainable component architecture**  
+✅ **Powerful state management**  
+✅ **Industry-standard tech stack**  
+✅ **Zero cost increase (still free tier)**  
+✅ **Future-proof for growth**  
+✅ **Better developer experience (Vite HMR)**  
+
+#### Risks & Mitigation
+
+| Risk | Mitigation |
+|------|------------|
+| Migration breaks features | Incremental migration, keep backup, thorough testing |
+| Build complexity | Vite is simple, one config file |
+| Learning curve | React is well-documented, huge community |
+| Bundle size increase | Code splitting, lazy loading routes |
+| Hosting change | Vercel free tier is generous, easy setup |
+
+---
+
+## �👤 User Journey (Updated)
+
+### New Two-Stage Workflow
+
+```
+🏁 START
+   ↓
+📍 STAGE 1: MAP SELECTION
+   • Search location (AI-enhanced)
+   • Adjust bounding box
+   • Select style (light/dark/outdoors/laser)
+   • Choose size & aspect ratio
+   ↓
+🎨 [GENERATE IMAGE]
+   ↓
+🖼️ STAGE 2: PROFESSIONAL EDITOR
+   • See live preview
+   • Adjust contrast (live update)
+   • Thicken text/lines (live update)
+   • Apply edge detection (live update)
+   • Force black/white elements (live update)
+   • AI suggestions panel
+   • Before/after comparison
+   ↓
+💾 [DOWNLOAD] or [COPY TO CLIPBOARD]
+```
+
+### Detailed Step-by-Step
+
+| Stage | Step | Action | Details |
+|-------|------|--------|----------|
+| **1** | Land | View map interface | NYC centered, clean dark UI |
+| **1** | Search | Find location | AI-powered natural language search OR traditional geocoding |
+| **1** | Select | Adjust bounding box | Drag corners/edges to frame desired area |
+| **1** | Configure | Choose map settings | Style, size, aspect ratio (affects API call) |
+| **1** | Optional | AI optimization | "Optimize for [purpose]" suggests best settings |
+| **1** | Generate | Fetch from Mapbox | Single API call, shows loading state |
+| **2** | Editor | View full canvas | Professional editor opens with raw image |
+| **2** | Process | Apply filters | All controls update preview in real-time |
+| **2** | AI Help | Get suggestions | Context-aware AI tips for current map |
+| **2** | Review | Compare versions | Before/after toggle, zoom/pan inspection |
+| **2** | Export | Save or copy | Download PNG OR copy to clipboard |
+
+**Average time:** 
+- Quick export: 20 seconds (select → generate → download)
+- With editing: 60 seconds (select → generate → adjust → download)
+- With AI: 90 seconds (AI search → AI optimize → generate → AI suggest → adjust → download)
 
 ---
 
@@ -338,15 +610,17 @@ https://api.mapbox.com/styles/v1/{username}/{style_id}/static/[{bbox}]/{width}x{
 | Mobile Safari | iOS 14+ | 🟡 Pending | Touch events ready |
 | Chrome Mobile | Android 90+ | 🟡 Pending | Touch events ready |
 
-### Design System
+### Design System (Updated for Professional Editor)
 
 | Element | Specification |
 |---------|---------------|
-| **Color Palette** | Grays (#333, #666, #999), White (#fff), Accent (#4a90e2) |
-| **Typography** | System fonts (SF Pro, Segoe UI, Roboto) |
-| **Layout** | Desktop: Sidebar + Map \| Mobile: Stacked |
-| **Map Viewport** | 75% screen height (desktop), 60% (mobile) |
-| **Aesthetic** | Minimal, functional, trustworthy |
+| **Color Palette** | Dark theme: Background (#2a2a2a), Panels (#3a3a3a), Text (#e0e0e0), Accent (#4a90e2), Success (#4caf50) |
+| **Typography** | Monospace for metrics (Consolas, Monaco), Sans-serif for UI (Segoe UI, Roboto) |
+| **Layout** | Editor: Tools \| Canvas \| Properties panels |
+| **Canvas Viewport** | Maximum available space with 20px margins |
+| **Aesthetic** | Professional power tool (Adobe/Lightburn inspired) |
+| **Panels** | Resizable, clear borders (#555), 8px padding |
+| **Controls** | Sliders + numeric input boxes, grouped by function |
 
 ---
 
@@ -363,12 +637,22 @@ See [FUTURE_PROOFING.md](FUTURE_PROOFING.md) for detailed scalability strategy.
 | **AI Integration** | Natural language search, optimization suggestions, descriptions |
 | **User Experience** | Real-time preview, zoom/pan, clipboard copy, responsive design |
 
+### In Progress 🔄
+
+| Feature | Status | Priority | Notes |
+|---------|--------|----------|-------|
+| **Professional Editor Mode** | 🟡 Active Development | Critical | Two-stage workflow restructure |
+| **Dark Theme UI** | 🟡 Active Development | High | Adobe/Lightburn aesthetic |
+| **Live Preview Updates** | 🟡 Active Development | Critical | Real-time control feedback |
+| **Contextual AI Panel** | 🔵 Planned | Medium | Editor-specific suggestions |
+
 ### Planned Enhancements by Priority
 
 #### 🔴 High Priority (Next 3 Months)
 
 | Feature | Impact | Effort | Status |
 |---------|--------|--------|--------|
+| **Editor Mode Complete** | Critical UX improvement | High | 🟡 In Progress |
 | **Save/Load Presets** | High user retention | Medium | 🔵 Planned |
 | **URL Sharing** | Viral growth potential | Low | 🔵 Planned |
 | **Mobile Testing** | Critical for launch | Low | 🟡 In Progress |
@@ -424,6 +708,64 @@ See [FUTURE_PROOFING.md](FUTURE_PROOFING.md) for detailed scalability strategy.
 ---
 
 ## 📝 Development Log
+
+### December 21, 2025 - Major UX Restructure (Current Session)
+
+**🎯 Critical Decision: Two-Stage Professional Editor Workflow**
+
+**Problem Identified:**
+- Controls on main page had no immediate visual feedback
+- User confusion: "Why adjust settings if I can't see the effect?"
+- Mixing pre-generation (style/size) with post-generation (contrast/filters) controls
+
+**Solution Implemented:**
+- ✅ Documented new architecture in PROJECT.md
+- 🟡 Phase 1 In Progress: Main page simplification
+- 🔵 Phase 2 Planned: Professional editor mode build
+- 🔵 Phase 3 Planned: Polish and keyboard shortcuts
+
+**Design Philosophy:**
+- Professional power tool aesthetic (Adobe/Lightburn)
+- Dark theme (#2a2a2a) with visible panels
+- All controls show immediate live preview effect
+- AI suggestions contextual to editor state
+
+**Technical Benefits:**
+- Budget-friendly: ONE API call, unlimited edits
+- Performance: Client-side Canvas processing
+- User-friendly: See exactly what each control does
+- Future-proof: Easy to add more editor tools
+
+**Implementation Status:**
+- [x] Architecture documented
+- [x] User flow updated
+- [x] Design system defined
+- [x] **Phase 1 Complete:** Main page restructure
+  - [x] Removed Effects menu (Laser, Edge Detection, Invert, Envelope Warp)
+  - [x] Removed Contrast control from main page
+  - [x] Enhanced Generate button → "🎨 Generate & Edit" (larger, prominent)
+  - [x] Auto-open Professional Editor after generation
+- [x] **Phase 1 Complete:** Professional dark theme CSS
+  - [x] Modal structure: #2a2a2a background, #1e1e1e canvas area
+  - [x] All text: #e0e0e0, borders: #3a3a3a/#555
+  - [x] Form controls: dark inputs/selects (#3a3a3a backgrounds)
+  - [x] Buttons: #4a90e2 primary color
+  - [x] Checkbox groups with hover states
+  - [x] Custom range slider styling
+  - [x] Professional badges (NEW, AI, Experimental)
+- [ ] **Phase 2:** Professional editor enhancements
+  - [ ] Reorganize controls into logical panels
+  - [ ] Add collapsible sections
+  - [ ] Add before/after comparison view
+  - [ ] Test all live preview updates work correctly
+- [ ] **Phase 3:** Advanced features
+  - [ ] Add contextual AI suggestions panel
+  - [ ] Keyboard shortcuts (Ctrl+Z, Ctrl+S, Ctrl+E)
+  - [ ] Panel resizing capability
+  - [ ] Enhanced status bar
+  - [ ] Mobile editor testing
+
+---
 
 ### December 21, 2025 - Visual Overhaul & Future-Proofing
 
