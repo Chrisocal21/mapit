@@ -1,0 +1,544 @@
+/* Illustrator-style layout */
+.editor-page {
+  height: 100vh;
+  width: 100vw;
+  background: #323232;
+  color: #cccccc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Top bar - compact like Illustrator menu bar */
+.editor-header {
+  display: flex;
+  flex-direction: column;
+  background: #464646;
+  border-bottom: 1px solid #2d2d2d;
+  flex-shrink: 0;
+}
+
+.header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  height: 40px;
+}
+
+/* Menu bar - Adobe style */
+.menu-bar {
+  display: flex;
+  gap: 0;
+  background: #3d3d3d;
+  border-top: 1px solid #2d2d2d;
+  padding: 0 8px;
+}
+
+.menu-item {
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #cccccc;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: background 0.1s;
+  position: relative;
+}
+
+.menu-item:hover {
+  background: #505050;
+  color: #ffffff;
+}
+
+/* View menu dropdown */
+.view-menu {
+  position: relative;
+}
+
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #3d3d3d;
+  border: 1px solid #2d2d2d;
+  min-width: 150px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.view-menu:hover .menu-dropdown {
+  display: block;
+}
+
+.menu-dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #cccccc;
+  cursor: pointer;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.menu-dropdown-item:hover {
+  background: #505050;
+}
+
+.menu-dropdown-item input[type="checkbox"] {
+  margin: 0;
+}
+
+.menu-dropdown-item input[type="number"] {
+  background: #2d2d2d;
+  border: 1px solid #1e1e1e;
+  color: #cccccc;
+  border-radius: 2px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-left h2 {
+  font-size: 13px;
+  font-weight: 400;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.processing-msg {
+  padding: 3px 10px;
+  background: #3d3d3d;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #66b3ff;
+}
+
+.header-right {
+  display: flex;
+  gap: 6px;
+}
+
+.back-btn,
+.btn-secondary {
+  padding: 5px 14px;
+  background: #505050;
+  border: 1px solid #606060;
+  color: #e0e0e0;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.1s;
+}
+
+.back-btn:hover,
+.btn-secondary:hover {
+  background: #5a5a5a;
+}
+
+.btn-primary {
+  padding: 5px 14px;
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.btn-primary:hover {
+  background: #0b5ed7;
+}
+
+/* Main layout - left toolbar, center canvas, right toolbar */
+.editor-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: #525252;
+}
+
+/* Left toolbar - compact vertical like Illustrator */
+.layers-panel {
+  width: 240px;
+  min-width: 100px;
+  max-width: 500px;
+  background: #464646;
+  border-right: 1px solid #323232;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 8px 8px;
+  position: relative;
+}
+
+/* Right toolbar - compact like Illustrator palettes */
+.properties-panel {
+  width: 280px;
+  min-width: 180px;
+  max-width: 500px;
+  background: #464646;
+  border-left: 1px solid #323232;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 8px 0;
+  position: relative;
+}
+
+/* Panel headers - consistent styling for all sections */
+.layers-panel h3,
+.properties-panel h3 {
+  margin: 0;
+  padding: 8px 12px;
+  background: #3d3d3d;
+  border-bottom: 1px solid #323232;
+  font-size: 11px;
+  font-weight: 500;
+  color: #cccccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* Resize handles */
+.resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+  cursor: ew-resize;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.resize-handle:hover {
+  background: #0d6efd;
+}
+
+.resize-handle.left {
+  right: -2px;
+}
+
+.resize-handle.right {
+  left: -2px;
+}
+
+/* Layers list - vertical icon stack like Illustrator tools */
+.layers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 8px;
+}
+
+.layer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+
+.layer-item:hover {
+  background: #525252;
+}
+
+.layer-item.active {
+  background: #606060;
+}
+
+.layer-item label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  margin: 0;
+  width: 100%;
+}
+
+.layer-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.layer-item span {
+  font-size: 10px;
+  color: #b3b3b3;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 94px;
+  word-wrap: break-word;
+}
+
+.layer-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  background: #66ff66;
+  border-radius: 50%;
+}
+
+/* Presets section */
+.presets-section {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.presets-section select {
+  width: 100%;
+  padding: 6px 8px;
+  background: #3d3d3d;
+  border: 1px solid #2d2d2d;
+  color: #e0e0e0;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.presets-section select:hover {
+  background: #4d4d4d;
+}
+
+.presets-section small {
+  font-size: 10px;
+  color: #999999;
+  line-height: 1.3;
+}
+
+/* Center canvas area - gray workspace like Illustrator */
+.canvas-area {
+  flex: 1;
+  background: #525252;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: auto;
+  position: relative;
+}
+
+.canvas-controls {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #464646;
+  border: 1px solid #3d3d3d;
+  border-radius: 4px;
+  padding: 8px 12px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.canvas-controls button {
+  background: #3d3d3d;
+  color: #e4e4e4;
+  border: 1px solid #2d2d2d;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 32px;
+}
+
+.canvas-controls button:hover {
+  background: #4d4d4d;
+  border-color: #5d5d5d;
+}
+
+.canvas-controls button:active {
+  background: #2d2d2d;
+}
+
+.canvas-controls span {
+  color: #e4e4e4;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  min-width: 50px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.canvas-wrapper {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  display: inline-block;
+  position: relative;
+}
+
+/* Rulers */
+.ruler {
+  position: absolute;
+  background: #2d2d2d;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.ruler-horizontal {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.ruler-vertical {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 20px;
+  border-right: 1px solid #1e1e1e;
+}
+
+/* Grid overlay */
+.grid-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.canvas-placeholder {
+  padding: 40px;
+  text-align: center;
+  color: #999999;
+  font-size: 13px;
+}
+
+/* Properties sections - better spaced layout */
+.property-section {
+  padding: 16px 16px;
+  border-bottom: 1px solid #323232;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.property-section:last-child {
+  border-bottom: none;
+}
+
+.property-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  color: #b3b3b3;
+}
+
+.property-section label span {
+  color: #b3b3b3;
+}
+
+.property-section input[type="range"] {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  accent-color: #0d6efd;
+}
+
+.property-section input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Map info section */
+.map-info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-info p {
+  margin: 0;
+  font-size: 11px;
+  color: #b3b3b3;
+  line-height: 1.4;
+}
+
+.map-info p strong {
+  color: #cccccc;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Responsive - keep compact layout */
+@media (max-width: 1400px) {
+  .layers-panel {
+    width: 100px;
+  }
+  .properties-panel {
+    width: 180px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .editor-layout {
+    flex-direction: column;
+  }
+  
+  .layers-panel,
+  .properties-panel {
+    width: 100%;
+    max-height: 250px;
+    border: none;
+    border-bottom: 1px solid #1e1e1e;
+  }
+}
+  color: #aaa;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 24px;
+  background: #323232;
+  border-top: 1px solid #1e1e1e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  color: #999999;
+  flex-shrink: 0;
+}
+
+.status-left,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

@@ -6,30 +6,98 @@
 
 | Metric | Status | Details |
 |--------|--------|----------|
-| **Overall Progress** | 🎯 90% | Phase 14 Decision: Framework Migration |
+| **Overall Progress** | 🎯 75% → Phase 15 Critical | Layer Management System = competitive moat |
 | **Core Features** | ✅ Complete | All MVP functionality shipped |
 | **AI Integration** | ✅ Complete | GPT-4o-mini powered features |
+| **Layer System** | 🔴 Critical Priority | **THE killer feature** - AI decomposes map into editable layers |
 | **UX Architecture** | 🔵 Planning | Migrating to React + Adobe-style editor |
 | **Testing** | 🟡 95% | Cross-browser tested, mobile pending |
 | **Deployment** | 🟡 90% | Docs complete, hosting test pending |
 | **Future-Proofing** | ✅ Decided | Vite + React migration approved |
-| **Last Updated** | 📅 Dec 21, 2025 | Framework migration planned |
+| **Last Updated** | 📅 Dec 22, 2025 | Phase 15 scope expanded to full layer system |
 
 </div>
+
+---
+
+## 🎯 CRITICAL PATH TO LAUNCH
+
+**Target:** Q2 2026 (6 months) - Beat Laser Map Maker to enterprise contracts
+
+### Phase Priority Order
+
+| Phase | Status | Timeline | Blocker | Notes |
+|-------|--------|----------|---------|-------|
+| **Phase 14: React Migration** | 🔵 Next | 2-3 weeks | None | Foundation for Phase 15 |
+| **Phase 15a: MVP Layer System** | 🔴 **CRITICAL** | 10-12 weeks | Phase 14 | **5 core layers** - Water, Roads, Buildings, Parks, Land |
+| **Phase 16: User Accounts** | 🔵 Required | 2-3 weeks | Phase 14 | Save projects + subscription billing |
+| **Phase 17: Beta Launch** | 🟢 Target | Q2 2026 | Phases 14-16 | 50-100 beta users, gather feedback |
+| **Phase 18: Public Launch** | 🟢 Goal | Q3 2026 | Beta success | Full marketing push, monetization |
+| **Phase 15b: Enhanced Layers** | 🟡 Post-Launch | 4-6 weeks | User feedback | Sub-categorization, labels/text, boundaries |
+| **Phase 15c: Advanced Features** | 🟢 Long-Term | 3-6 months | Revenue validation | Transit, terrain, ML enhancements |
+
+### What's Working ✅
+
+**Completed & Production-Ready:**
+- Interactive map with Leaflet.js
+- Location search (traditional + AI-enhanced)
+- Adjustable bounding box
+- Mapbox Static API integration
+- Canvas-based image processing (contrast, edge detection, thickening)
+- Professional editor mode (dark theme, modals)
+- AI optimization suggestions
+- Real-time preview
+- Mobile responsive
+- Copy to clipboard
+- Deterministic processing
+
+### What Needs Work 🔧
+
+**Critical for Launch:**
+- 🔴 **Phase 14: React Migration** (2-3 weeks) - Foundation for layer system
+- 🔴 **Phase 15a: MVP Layer System** (10-12 weeks) - **THE competitive moat**
+  - 5 core layers: Water, Roads, Buildings, Parks, Land (75-85% accuracy)
+  - Layer panel UI (toggle any feature on/off)
+  - Export multi-layer files (PNG/SVG)
+  - 5 smart presets ("Roads Only", "No Water", etc.)
+  - Processing time: 10-15 seconds (with progress bar)
+  - **This STILL beats Laser Map Maker** - they have nothing like this
+  
+**Important but Not Blocking:**
+- 🟡 User accounts + project saving (Phase 16, 2-3 weeks)
+- 🟡 Layer sub-categorization (Phase 15b, post-launch)
+- 🟡 Labels/text detection (Phase 15b, post-launch)
+- 🟡 Laser cutter integrations (Lightburn/xTool)
+
+**Nice-to-Have (Post-Launch):**
+- 🟢 Transit line detection (Phase 15c)
+- 🟢 Terrain features (Phase 15c)
+- 🟢 ML-enhanced accuracy (Phase 15c)
+- 🟢 Batch processing
+- 🟢 Team collaboration features
+- 🟢 Mobile app
 
 ---
 
 ## 📊 Quick Overview
 
 **What it does:** Generate laser engraving-ready map images from any location  
-**For whom:** Laser engravers, makers, gift creators  
-**Key feature:** High-contrast B&W maps optimized for glass/wood engraving  
-**Tech stack:** Leaflet.js + Mapbox + OpenAI + Canvas API  
-**Cost:** $0-5/month (generous free tiers)  
+**For whom:** Laser engravers, makers, gift creators, **enterprise production teams**  
+**Killer feature:** 🎯 **Intelligent Layer System** - Deconstruct maps into editable layers (water, roads, highways, buildings, parks, labels, land, etc.) - Toggle any feature on/off independently (competitors can't do this)  
+**Tech stack:** Leaflet.js + Mapbox + OpenAI + Canvas API + Computer Vision  
+**Cost:** $0-5/month development, freemium model at launch  
+**Competitive edge:** Beat Laser Map Maker ($9.60-19.20/mo) with complete layer control vs their basic editing
 
-**🎯 New Workflow:** Select location → Generate → **Professional Editor** → AI optimize → Export
+**🎯 New Workflow:** Select location → Generate → **Professional Editor** → Layer system (remove/add features) → AI optimize → Export
 
-**Design Philosophy:** Adobe/Lightburn-inspired power tool, not Apple minimalism
+**Design Philosophy:** "Light on your feet, powerhouse under the hood" - Easy for beginners, unstoppable for pros  
+**Market Position:** Accessible to all through tiered system, beating premium competitors with better features
+
+**Example Use Cases:**
+- Remove ocean + parks, keep only roads/buildings (coastal city engraving)
+- Remove everything except highways (minimalist road map)
+- Remove labels + buildings, keep natural features (clean topography)
+- Start blank, add back only what you need (ultimate control)
 
 ---
 
@@ -51,26 +119,71 @@
 | **10** | Advanced Features | 🟡 90% | Laser mode, AI, presets pending |
 | **11** | AI Integration | ✅ 100% | Natural language search, optimization |
 | **12** | Future-Proofing | 🔵 Planning | Architecture, scaling, monitoring |
-| **13** | UX Restructure | � Phase 1 Complete | Professional editor workflow implemented |
-| **14** | Framework Migration |  Planned | Vite + React + Adobe-style editor |
+| **13** | UX Restructure | ✅ Phase 1 Complete | Professional editor workflow implemented |
+| **14** | Framework Migration | 🔵 Planned | Vite + React + Adobe-style editor |
+| **15** | **Layer Management System** | 🔴 **CRITICAL** | **THE killer feature** - AI decomposes map into editable layers (water, roads, highways, buildings, parks, labels, land) - Toggle any on/off - Ultimate flexibility - Competitive moat |
 
 ### Outstanding Items
+
+**🔴 PHASE 15a: MVP Layer System** (10-12 weeks) - Q1-Q2 2026
+- [ ] **Core 5 Layer Detection** (Weeks 1-5):
+  - [ ] 🌊 Water detection (blue color ranges)
+  - [ ] 🛣️ Roads detection (line/Hough Transform)
+  - [ ] 🏗️ Buildings detection (polygon/contour)
+  - [ ] 🌳 Parks detection (green color ranges)
+  - [ ] 🏝️ Land/background (inverse of above)
+- [ ] **Layer Panel UI** (Weeks 6-8):
+  - [ ] Checkbox toggle system
+  - [ ] Eye icon (show/hide)
+  - [ ] Trash icon (delete)
+  - [ ] Drag-to-reorder
+  - [ ] Real-time canvas updates (< 100ms)
+- [ ] **Smart Presets** (Week 9):
+  - [ ] "Roads Only", "No Water", "Natural Features", "Urban Only", "Blank Canvas"
+- [ ] **Export System** (Weeks 10-11):
+  - [ ] Merged PNG, Separate PNGs per layer
+  - [ ] Layered SVG, Separate SVGs per layer
+- [ ] **Manual Tools** (Weeks 11-12):
+  - [ ] Eraser tool, Paint tool, Undo/Redo
+- [ ] **Polish** (Week 12):
+  - [ ] Progress indicator, Error handling, Performance tuning
+
+**🟡 PHASE 15b: Enhanced Detection** (4-6 weeks) - POST-LAUNCH
+- [ ] Roads sub-categorization (highways, arterial, local)
+- [ ] Buildings by size (commercial, residential, small)
+- [ ] Labels/text detection (Tesseract.js OCR)
+- [ ] Boundaries detection (dashed lines)
+- [ ] Enhanced presets ("Highways Only", "No Labels", "Engraving Optimized")
+
+**🔵 PHASE 15c: Advanced Features** (3-6 months) - LONG-TERM
+- [ ] Transit lines (railways, subway, ferry)
+- [ ] Terrain features (contours, elevation)
+- [ ] AI-enhanced learning (user corrections → ML model)
+- [ ] Advanced manual tools (lasso, magic wand, blending modes)
+
+**🔧 PHASE 14: Framework Foundation** (2-3 weeks) - PREREQUISITE
+- [ ] Vite + React migration
+- [ ] Component architecture setup
+- [ ] State management (Zustand)
+- [ ] React Router (/ and /editor pages)
 
 **Testing** (Phase 8)
 - [ ] Mobile device testing (iOS Safari, Android Chrome)
 
 **Deployment** (Phase 9)
-- [ ] Production hosting test (Cloudflare Pages/Render)
+- [ ] Production hosting (Vercel/Netlify for React app)
 
 **Advanced Features** (Phase 10)
 - [ ] Ferry line removal refinement
 - [ ] Save/load preset system
 - [ ] Export settings as URL
+- [ ] **Laser cutter integration** (Lightburn, xTool, etc.)
+- [ ] Material presets (glass, wood, acrylic, metal)
 
 **Future-Proofing** (Phase 12)
 - [ ] Dependency version management
 - [ ] API versioning implementation
-- [ ] Database integration planning
+- [ ] Database integration (user accounts + saved projects)
 - [ ] Analytics & monitoring setup
 
 <details>
@@ -493,7 +606,7 @@ src/
 
 ## 💰 Cost Analysis
 
-### Monthly Operating Costs
+### Monthly Operating Costs (Development Phase)
 
 | Service | Plan | Limit | Est. Usage | Cost |
 |---------|------|-------|------------|------|
@@ -503,6 +616,22 @@ src/
 | **Hosting** | Free Tier | Unlimited bandwidth | N/A | **$0** |
 | **Domain** *(optional)* | Custom | N/A | 1 domain | **$12/yr** |
 | | | | **Total** | **$0-5/mo** |
+
+### Freemium Revenue Model (Post-Launch)
+
+**Competitive Analysis:** Laser Map Maker charges $9.60-19.20/mo - we undercut with better features
+
+| Plan | Price | Features | Target | vs Laser Map Maker |
+|------|-------|----------|--------|--------------------|
+| **Free** | $0 | 10 maps/month, watermark, basic editor | Trial users | ✅ More generous than 14-day trial |
+| **Hobbyist** | $6/mo ($60/yr) | 100 maps/month, no watermark, **region selection** | Casual makers | ✅ Cheaper ($9.60/mo) + better features |
+| **Professional** | $12/mo ($120/yr) | Unlimited maps, AI tools, project saving, batch processing | Power users | ✅ Cheaper ($19.20/mo) + team features |
+| **Enterprise** | Custom | Team accounts, API, laser integrations, priority support | Production teams | ✅ They don't offer this tier |
+
+**Revenue Projections (Year 1):**
+- 5,000 free users → 500 paid conversions (10%) → $6,000/mo MRR
+- 2-3 enterprise contracts → $3,000-5,000/mo → **$9,000-11,000/mo total**
+- Year 1 Revenue: **$108,000-132,000**
 
 ### Cost Optimization Strategy
 
@@ -624,9 +753,289 @@ https://api.mapbox.com/styles/v1/{username}/{style_id}/static/[{bbox}]/{width}x{
 
 ---
 
+## 🎯 Competitive Strategy: Beat Laser Map Maker
+
+**Market Context:** Laser Map Maker charges $9.60-19.20/mo for basic layer editing. They have 3.5k+ community, established brand, but **lack selective region removal**.
+
+**Our Competitive Advantages:**
+
+| Feature | Laser Map Maker | mapit (Our Tool) | Impact |
+|---------|----------------|------------------|--------|
+| **Layer Management** | ❌ Basic multi-layer export | ✅ **AI decomposes ALL features** (water, roads, highways, buildings, parks, labels, land) - Toggle any on/off | 🔥🔥🔥 GAME CHANGER |
+| **Selective Editing** | ❌ All-or-nothing | ✅ Remove/add any feature independently | 🔥🔥 KILLER FEATURE |
+| **Workflow Flexibility** | Manual layer creation | ✅ Start blank, add back only what you need | 🔥🔥 PRO FEATURE |
+| **Pricing** | $9.60-19.20/mo | $6-12/mo (50% cheaper) | 🔥 Price advantage |
+| **Free Tier** | 14-day trial only | 10 maps/month forever | 🔥 Viral growth |
+| **AI Features** | ❌ None | ✅ Smart detection + optimization | 🔥 Innovation edge |
+| **Mobile Support** | ❌ Desktop only | ✅ Fully responsive | 🔥 Accessibility |
+| **Team Features** | ❌ Single user | ✅ Team accounts (Enterprise) | 🔥 B2B opportunity |
+| **Laser Integration** | Basic export | Direct Lightburn/xTool integration | 🔥 Workflow advantage |
+
+**Target Launch:** Q2 2026 (6 months)  
+**Initial Focus:** Enterprise pilot + hobbyist free tier  
+**Goal:** 500 free users, 50 paid conversions, 2+ enterprise contracts by Q3 2026
+
+See [COMPETITIVE_ANALYSIS.md](COMPETITIVE_ANALYSIS.md) for detailed competitive breakdown.
+
+---
+
 ## 🚀 Future Enhancements & Roadmap
 
 See [FUTURE_PROOFING.md](FUTURE_PROOFING.md) for detailed scalability strategy.
+
+### 🎯 Phase 15: Intelligent Layer Management System (GAME-CHANGING FEATURE)
+
+**Goal:** Deconstruct maps into independently editable layers - users can remove/add any feature
+
+**User Stories:**
+- "Remove ocean + parks, keep only roads/buildings" (coastal city)
+- "Remove everything except highways" (minimalist poster)
+- "Remove labels + buildings, keep natural features" (clean topography)
+- "Start blank, selectively add back only roads + water" (ultimate control)
+
+**Phased Implementation Approach:**
+
+---
+
+## 🚀 **Phase 15a: MVP Layer System** (10-12 weeks) ← START HERE
+
+**Core 5 Layers (75-85% accuracy):**
+1. **🌊 Water** - Oceans, lakes, rivers (color detection: blues)
+2. **🛣️ Roads** - All road types combined (line detection algorithms)
+3. **🏗️ Buildings** - All building types combined (polygon/shape detection)
+4. **🌳 Parks** - Green spaces, forests, parks (color detection: greens)
+5. **🏝️ Land** - Background/everything else (inverse of above)
+
+**Why This Order:**
+- Water: EASIEST - blue color detection is extremely reliable
+- Roads: MEDIUM - well-tested line detection algorithms (Hough Transform)
+- Buildings: MEDIUM - shape/polygon detection proven in OpenCV
+- Parks: EASY - green color detection similar to water
+- Land: EASY - everything that's not the above
+
+**The Vision: Photoshop Layers for Maps (Simplified MVP)**
+```
+┌─────────────────────────────────────────────────────────┐
+│  LAYERS PANEL                     │  CANVAS PREVIEW     │
+│                                   │                     │
+│  ☑ 🌊 Water (Ocean, Lakes)  [👁][🗑]                    │
+│  ☑ 🛣️ Roads (All Types)    [👁][🗑]  Live preview      │
+│  ☑ 🏗️ Buildings           [👁][🗑]  updates as         │
+│  ☑ 🌳 Parks & Green       [👁][🗑]  you toggle          │
+│  ☑ 🏝️ Land/Background     [👁][🗑]  layers on/off      │
+│                                   │                     │
+│  [Remove All] [Add All]           │                     │
+│  [Preset: Roads Only ▾]           │  [Export Layers]    │
+│                                   │  [Download PNG]     │
+└─────────────────────────────────────────────────────────┘
+
+Presets Available:
+• "Roads Only" - Remove water, buildings, parks, land
+• "No Water" - Keep everything except water
+• "Natural Features" - Water + parks only
+• "Urban Only" - Roads + buildings only
+• "Blank Canvas" - Remove all, add back selectively
+```
+
+**Step 1: Core Detection Engine** - 4-5 weeks
+- [ ] Integrate OpenCV.js (client-side computer vision)
+- [ ] Implement color-based detection:
+  ```javascript
+  const DETECTION_CONFIG = {
+    water: {
+      colorRanges: [
+        { r: [100, 180], g: [160, 230], b: [200, 255] }, // Light blues
+        { r: [80, 140], g: [140, 200], b: [180, 240] }   // Medium blues
+      ],
+      minArea: 50 // pixels (filter noise)
+    },
+    parks: {
+      colorRanges: [
+        { r: [100, 180], g: [180, 255], b: [60, 140] }   // Greens
+      ],
+      minArea: 30
+    },
+    roads: {
+      algorithm: 'hough_lines',
+      colors: ['#FFFFFF', '#F0F0F0', '#FFD700'], // White, gray, yellow
+      minLength: 20, // pixels
+      lineThickness: [1, 10] // px range
+    },
+    buildings: {
+      algorithm: 'contour_detection',
+      colors: ['#D4C8B8', '#C8BCA8', '#B8ACA0'], // Browns/grays
+      shapeFilter: 'polygons',
+      minArea: 25
+    }
+  };
+  ```
+- [ ] Generate binary mask (black/white) for each layer
+- [ ] Optimize for performance (target 10-15 seconds processing)
+- [ ] Handle edge cases (map styles with unusual colors)
+
+**Step 2: Layer Panel UI** - 2-3 weeks
+- [ ] Build collapsible left sidebar panel
+- [ ] Each layer row has:
+  - Checkbox (toggle visibility) ✓
+  - Eye icon (show/hide preview)
+  - Trash icon (delete layer permanently)
+  - Layer name + emoji icon
+- [ ] Real-time canvas updates on toggle (< 100ms response)
+- [ ] Drag-to-reorder layers (z-index control)
+- [ ] Layer opacity slider (0-100%)
+- [ ] "Select All" / "Deselect All" buttons
+
+**Step 3: Smart Presets** - 1 week
+- [ ] Dropdown with 5 pre-built workflows:
+  - **"Roads Only"**: roads=true, all_else=false
+  - **"No Water"**: water=false, all_else=true
+  - **"Natural Features"**: water=true, parks=true, all_else=false
+  - **"Urban Only"**: roads=true, buildings=true, all_else=false
+  - **"Blank Canvas"**: all=false (user adds back manually)
+- [ ] Apply preset with one click
+- [ ] Show which layers will be affected before applying
+
+**Step 4: Export Options** - 1-2 weeks
+- [ ] **Merged PNG** (current canvas view as-is)
+- [ ] **Separate PNGs** per layer (water.png, roads.png, etc.)
+- [ ] **Layered SVG** (all layers in one file, preserves structure)
+- [ ] **Separate SVGs** per layer (vector format for laser cutters)
+- [ ] Export dialog shows file size estimates
+- [ ] Batch download as ZIP file
+
+**Step 5: Manual Refinement Tools (Basic)** - 2-3 weeks
+- [ ] **Eraser tool**: Remove parts of any layer manually
+- [ ] **Paint tool**: Add back parts to any layer
+- [ ] **Undo/Redo**: Full history stack (last 20 actions)
+- [ ] Brush size slider (5-50px)
+- [ ] Preview changes before committing
+
+**Step 6: Polish & Testing** - 1-2 weeks
+- [ ] Progress indicator during layer detection ("Detecting water... 20%")
+- [ ] Error handling (if detection fails, allow manual selection)
+- [ ] Performance optimization (Web Workers for background processing)
+- [ ] Cross-browser testing (Chrome, Firefox, Safari, Edge)
+- [ ] Mobile testing (basic layer toggle on tablets)
+
+**MVP Success Metrics:**
+- ✅ Water detection: 90%+ accuracy (easiest feature)
+- ✅ Roads detection: 75-80% accuracy (acceptable)
+- ✅ Buildings detection: 70-75% accuracy (acceptable)
+- ✅ Parks detection: 85%+ accuracy (color-based)
+- ✅ Processing time: 10-15 seconds (with progress bar)
+- ✅ User workflow: 3+ layer toggles per session
+- ✅ "This is exactly what I needed" feedback
+
+**Timeline: 10-12 weeks total**
+
+---
+
+## 🟡 **Phase 15b: Enhanced Detection** (4-6 weeks) - POST-LAUNCH
+
+**Add after MVP is validated with real users**
+
+**Sub-Categorization:**
+- [ ] **Roads by class**:
+  - Highways (thick, usually yellow/orange)
+  - Arterial roads (medium, white)
+  - Local streets (thin, light gray)
+  - Detection by line thickness + color
+- [ ] **Buildings by density**:
+  - Large commercial (>500 sq px)
+  - Medium residential (100-500 sq px)
+  - Small structures (<100 sq px)
+- [ ] Add expand/collapse arrows for sub-layers in UI
+
+**Labels/Text Detection:**
+- [ ] Integrate Tesseract.js for OCR
+- [ ] Detect text regions (city names, street labels, POIs)
+- [ ] Group as "Labels & Text" layer
+- [ ] WARNING: Adds 5-10 seconds processing time
+- [ ] Accuracy: 70-80% (user can manually correct)
+
+**Boundaries Detection:**
+- [ ] Detect dashed/dotted lines (country, state, city borders)
+- [ ] Pattern recognition for border styles
+- [ ] Group as "Boundaries" layer
+
+**Enhanced Presets:**
+- [ ] "Highways Only" (removes local streets)
+- [ ] "No Labels" (keeps everything except text)
+- [ ] "Engraving Optimized" (removes labels, small buildings, thickens roads)
+
+**Timeline: 4-6 weeks**
+
+---
+
+## 🔴 **Phase 15c: Advanced Features** (3-6 months) - LONG-TERM
+
+**Build only if users demand these features**
+
+**Transit Lines:**
+- [ ] Railway detection (parallel lines pattern)
+- [ ] Subway lines (distinct colors/patterns)
+- [ ] Ferry routes (dashed lines on water)
+- [ ] Pattern matching algorithms
+- [ ] Accuracy: 60-70% (complex patterns)
+
+**Terrain Features:**
+- [ ] Elevation contours (subtle lines, hard to detect)
+- [ ] Landform shading (elevation-based coloring)
+- [ ] Requires machine learning model training
+- [ ] Accuracy: 50-65% (very challenging)
+
+**AI-Enhanced Learning:**
+- [ ] Collect user corrections ("This was labeled wrong")
+- [ ] Train ML model on 1000+ corrected maps
+- [ ] Improve detection accuracy over time
+- [ ] Context-aware detection (coastal maps = better water detection)
+- [ ] Requires significant data collection + compute resources
+
+**Advanced Manual Tools:**
+- [ ] Lasso tool (free-form selection)
+- [ ] Magic wand (select similar colors across map)
+- [ ] Layer blending modes (multiply, overlay, screen)
+- [ ] Layer effects (drop shadow, glow, stroke)
+
+**Timeline: 3-6 months (depending on priority)**
+
+---
+
+## 🎯 **Why Phase 15a MVP STILL Dominates**
+
+**Even with just 5 layers, users can do everything that matters:**
+
+✅ **Coastal city engraving**: Remove water, keep roads + buildings  
+✅ **Minimalist highway poster**: Remove everything except roads  
+✅ **Clean nature map**: Remove buildings + roads, keep water + parks  
+✅ **Urban focus**: Remove parks + water, keep buildings + roads  
+✅ **Blank canvas workflow**: Remove all, manually add back what you need  
+
+**That covers 95% of real-world use cases** - and Laser Map Maker can't do ANY of it.
+
+**Competitive Advantage:**
+- 🔥 **Laser Map Maker**: Basic multi-layer export (pre-set by Mapbox)
+- 🔥🔥 **Our MVP**: AI auto-detects layers + toggle any on/off independently
+- 🔥🔥🔥 **Phase 15b**: Sub-categorization (highways vs streets) - unmatched
+- 🔥🔥🔥 **Phase 15c**: ML-enhanced accuracy - years ahead
+
+**Why This Approach Wins:**
+- ✅ Ship killer feature in Q2 2026 (realistic timeline)
+- ✅ Validate with real users before over-investing
+- ✅ Impossible for competitors to quickly copy (4-5 months minimum)
+- ✅ Justifies premium pricing ($6-12/mo vs their $9.60-19.20/mo)
+- ✅ Demo shows instant "wow" factor
+- ✅ Appeals to beginners (presets) AND pros (manual editing)
+- ✅ Iterate based on actual demand, not assumptions
+
+**Launch Strategy:**
+1. **Ship Phase 15a MVP** in Q2 2026 (10-12 weeks after Phase 14)
+2. **Gather user feedback**: "What layers/features matter most?"
+3. **Prioritize Phase 15b** features based on demand + revenue
+4. **Use Phase 15a** as demo for enterprise contracts (competitive advantage)
+5. **Iterate Phase 15b/c** based on user requests + profitability
+
+---
 
 ### Completed Features ✅
 
@@ -648,19 +1057,85 @@ See [FUTURE_PROOFING.md](FUTURE_PROOFING.md) for detailed scalability strategy.
 
 ### Planned Enhancements by Priority
 
-#### 🔴 High Priority (Next 3 Months)
+#### 🔴 High Priority (Next 3 Months) - **COMPETITIVE FOCUS**
 
-| Feature | Impact | Effort | Status |
-|---------|--------|--------|--------|
-| **Editor Mode Complete** | Critical UX improvement | High | 🟡 In Progress |
-| **Save/Load Presets** | High user retention | Medium | 🔵 Planned |
-| **URL Sharing** | Viral growth potential | Low | 🔵 Planned |
-| **Mobile Testing** | Critical for launch | Low | 🟡 In Progress |
-| **Hosting Deployment** | Production readiness | Low | 🟡 In Progress |
-| **API Versioning** | Future-proofing | Low | 🔵 Planned |
+| Feature | Impact | Effort | Status | vs Laser Map Maker |
+|---------|--------|--------|--------|--------------------|
+| **🎯 Smart Region Selection** | **KILLER FEATURE** | High | 🔵 Phase 15 | They can't do this |
+| **"Remove Water" Button** | User delight | Medium | 🔵 Phase 15 | Simplicity wins |
+| **Auto-detect Features** | AI differentiation | High | 🔵 Phase 15 | Our innovation edge |
+| **Framework Migration** | Foundation for above | High | 🟡 Phase 14 | Technical debt |
+| **Editor Mode Complete** | Critical UX | High | 🟡 In Progress | Matches their UX |
+| **User Accounts** | Project saving | Medium | 🔵 Planned | Parity feature |
+| **Vector Export (SVG)** | Industry standard | Medium | 🔵 Planned | Parity with LMM |
+| **Mobile Testing** | Accessibility edge | Low | 🟡 In Progress | We have, they don't |
+| **Laser Cutter Integration** | Workflow optimization | Medium | 🔵 Planned | Critical for enterprise |
 
-#### 🟡 Medium Priority (3-6 Months)
-- [ ] Save/load presets system
+### 🎯 Phase 15: Smart Region Selection (KILLER FEATURE)
+
+**Goal:** Build the feature that Laser Map Maker can't offer - intelligent region removal
+
+**User Story:** "I want to engrave a coastal city but remove the ocean to save laser time and materials."
+
+**Implementation Strategy:**
+
+**Step 1: Auto-Detection (AI-Powered)** - 2-3 weeks
+- [ ] Integrate OpenCV.js for client-side computer vision
+- [ ] Detect map features by color/pattern analysis:
+  - Water (blues: #7CB5D2, #A0C6E8, etc.)
+  - Roads (grays/blacks: #2C2C2C, #505050, etc.)
+  - Buildings (browns/grays: #D4C8B8, etc.)
+  - Parks/green spaces (greens: #8BC34A, etc.)
+  - Labels/text (detect text regions)
+- [ ] Generate selectable masks for each feature type
+- [ ] Store masks as separate Canvas layers
+
+**Step 2: Simple UI ("One-Click" Magic)** - 1 week
+- [ ] Add feature buttons to Professional Editor:
+  ```
+  SMART TOOLS
+  ┌─────────────────────────┐
+  │ 🌊 Remove Water         │ ← One click, done
+  │ 🏗️ Remove Buildings     │
+  │ 🌳 Remove Parks         │
+  │ 📍 Remove Labels        │
+  │ 🛣️ Keep Only Roads      │
+  └─────────────────────────┘
+  ```
+- [ ] Real-time preview of region removal
+- [ ] Undo/redo support for each action
+- [ ] Confidence indicator ("95% water detected")
+
+**Step 3: Advanced Manual Tools** - 2 weeks (Medium Priority)
+- [ ] Lasso tool (free-form selection)
+- [ ] Magic wand (select similar colors)
+- [ ] Rectangle/circle selection
+- [ ] Expand/contract selection
+- [ ] Invert selection
+- [ ] Combine AI + manual refinement
+
+**Step 4: Export Enhancements** - 1 week
+- [ ] Export with regions removed (PNG/SVG)
+- [ ] Export separate layers (water.svg, roads.svg, etc.)
+- [ ] Multi-material export (glass layer, wood layer)
+- [ ] Preview before export
+
+**Success Metrics:**
+- "Remove Water" works correctly on 90%+ of coastal maps
+- Processing time < 3 seconds on 2000x2000px image
+- User satisfaction: "This is exactly what I needed"
+- Competitive moat: Feature takes competitors 6+ months to replicate
+
+**Why This Wins:**
+- ✅ Solves real pain point ("I waste laser time on ocean areas")
+- ✅ Simple UX (one button click)
+- ✅ Powerful under the hood (computer vision AI)
+- ✅ Impossible for Laser Map Maker to quickly copy (requires R&D)
+- ✅ Justifies premium pricing ($6-12/mo vs their $9.60-19.20/mo)
+- ✅ Demo-worthy ("Watch this..." moment in sales pitches)
+
+---
+
 #### 🟡 Medium Priority (3-6 Months)
 
 | Feature | Impact | Effort | Users Needed |

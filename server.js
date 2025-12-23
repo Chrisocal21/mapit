@@ -51,14 +51,27 @@ app.get('/api/mapbox/static', async (req, res) => {
         }
 
         // Support both new (width/height) and legacy (size) parameters
-        const imgWidth = width || size;
-        const imgHeight = height || size;
+        let imgWidth = parseInt(width || size);
+        let imgHeight = parseInt(height || size);
+        
+        // Mapbox limits: @2x max 1280px, @1x max 1280px
+        const useRetina = retina === '1';
+        const maxSize = 1280;
+        
+        if (useRetina) {
+            // For retina, request half size and Mapbox returns double
+            imgWidth = Math.min(Math.floor(imgWidth / 2), maxSize);
+            imgHeight = Math.min(Math.floor(imgHeight / 2), maxSize);
+        } else {
+            imgWidth = Math.min(imgWidth, maxSize);
+            imgHeight = Math.min(imgHeight, maxSize);
+        }
         
         // For laser mode, use streets-v12 (has best detail for engraving)
         // We'll process it client-side to get pure black/white
         const mapStyle = style === 'laser' ? 'streets-v12' : style;
         
-        const retinaParam = retina === 'true' ? '@2x' : '';
+        const retinaParam = useRetina ? '@2x' : '';
         const url = `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/static/[${bbox}]/${imgWidth}x${imgHeight}${retinaParam}?access_token=${process.env.MAPBOX_TOKEN}`;
         
         console.log('Fetching from Mapbox:', url);
@@ -92,14 +105,20 @@ app.get('/api/mapbox/static', async (req, res) => {
 // Proxy endpoint for Mapbox Geocoding API
 app.get('/api/mapbox/geocoding', async (req, res) => {
     try {
-        const { query } = req.query;
+        const { q, query } = req.query;
+        const searchQuery = q || query;
+        
+        if (!searchQuery) {
+            return res.status(400).json({ error: 'Search query is required' });
+        }
         
         if (!process.env.MAPBOX_TOKEN) {
             return res.status(500).json({ error: 'Mapbox token not configured' });
         }
 
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${process.env.MAPBOX_TOKEN}&limit=5`;
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?access_token=${process.env.MAPBOX_TOKEN}&limit=5`;
         
+        console.log('Geocoding request:', searchQuery);
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -107,7 +126,8 @@ app.get('/api/mapbox/geocoding', async (req, res) => {
         }
         
         const data = await response.json();
-        res.json(data);
+        console.log('Geocoding results:', data.features?.length || 0, 'results');
+        res.json(data.features || []);
     } catch (error) {
         console.error('Error fetching from Mapbox:', error);
         res.status(500).json({ error: error.message });
