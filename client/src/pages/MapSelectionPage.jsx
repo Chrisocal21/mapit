@@ -151,6 +151,7 @@ function MapSelectionPage() {
   }
 
   const handleGenerate = async () => {
+    console.log('🎯 Generate clicked with bounds:', bounds)
     if (!bounds) {
       alert('Please select a location on the map')
       return
@@ -162,6 +163,7 @@ function MapSelectionPage() {
       // Use calculated dimensions from dimensionInfo
       const width = dimensionInfo.width
       const height = dimensionInfo.height
+      console.log('📐 Using dimensions:', { width, height })
       
       if (!width || !height || width <= 0 || height <= 0) {
         alert('Invalid dimensions. Please check your settings.')
@@ -179,12 +181,14 @@ function MapSelectionPage() {
       }
       
       // Generate map image
+      console.log('🗺️ Calling generateMapImage with:', { bounds, style: mapStyle, width: finalWidth, height: finalHeight })
       const imageUrl = await generateMapImage({
         bounds,
         style: mapStyle,
         width: finalWidth,
         height: finalHeight
       })
+      console.log('✅ Got image URL:', imageUrl)
       
       // Navigate to editor with image and settings
       navigate('/editor', {
@@ -293,6 +297,14 @@ function MapSelectionPage() {
               >
                 Custom
               </button>
+            </div>
+            
+            {/* Quick dimension buttons */}
+            <div className="quick-dimensions">
+              <button onClick={() => { setDimensionMode('custom'); setCustomWidth('2480'); setCustomHeight('3508'); setDimensionUnit('px'); }} className="quick-btn" title="A4 at 300 DPI">A4</button>
+              <button onClick={() => { setDimensionMode('custom'); setCustomWidth('2550'); setCustomHeight('3300'); setDimensionUnit('px'); }} className="quick-btn" title="Letter at 300 DPI">Letter</button>
+              <button onClick={() => { setDimensionMode('custom'); setCustomWidth('2400'); setCustomHeight('3000'); setDimensionUnit('px'); }} className="quick-btn" title="8×10 at 300 DPI">8×10</button>
+              <button onClick={() => { setDimensionMode('custom'); setCustomWidth('3300'); setCustomHeight('4200'); setDimensionUnit('px'); }} className="quick-btn" title="11×14 at 300 DPI">11×14</button>
             </div>
 
             {dimensionMode === 'preset' ? (

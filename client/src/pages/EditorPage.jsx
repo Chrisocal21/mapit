@@ -42,8 +42,16 @@ function EditorPage() {
     invertColors: false,
     forceBlackText: true,
     forceBlackRoads: true,
-    forceWhiteWater: true
+    forceWhiteWater: true,
+    borderThickness: 0,
+    borderColor: '#000000',
+    borderOverlap: true
   })
+  
+  // Export settings
+  const [exportFormat, setExportFormat] = useState('png')
+  const [exportQuality, setExportQuality] = useState(0.92)
+  const [canvasBackground, setCanvasBackground] = useState('white')
   
   const [isProcessing, setIsProcessing] = useState(false)
   const [processingMessage, setProcessingMessage] = useState('')
@@ -56,6 +64,7 @@ function EditorPage() {
   const [showRulers, setShowRulers] = useState(true)
   const [showGrid, setShowGrid] = useState(false)
   const [gridSize, setGridSize] = useState(50)
+  const [showShortcuts, setShowShortcuts] = useState(false)
   
   // Undo/Redo state
   const [history, setHistory] = useState([])
@@ -75,6 +84,9 @@ function EditorPage() {
   const [isPanning, setIsPanning] = useState(false)
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
   const panStartRef = useRef({ x: 0, y: 0 })
+  
+  // Status bar state
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
 
   // Load image on mount
   useEffect(() => {
@@ -330,9 +342,35 @@ function EditorPage() {
       const processedCanvas = processImage(tempCanvas, settings)
       
       // Update display canvas
+      canvasRef.current.width = originalCanvasRef.current.width
+      canvasRef.current.height = originalCanvasRef.current.height
       const displayCtx = canvasRef.current.getContext('2d')
       displayCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
       displayCtx.drawImage(processedCanvas, 0, 0)
+      
+      // Apply border if thickness > 0
+      if (settings.borderThickness > 0) {
+        displayCtx.strokeStyle = settings.borderColor
+        displayCtx.lineWidth = settings.borderThickness * 2
+        if (settings.borderOverlap) {
+          // Border overlaps image
+          displayCtx.strokeRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+        } else {
+          // Border outside image (expand canvas)
+          const bordered = document.createElement('canvas')
+          const thickness = settings.borderThickness
+          bordered.width = canvasRef.current.width + thickness * 2
+          bordered.height = canvasRef.current.height + thickness * 2
+          const borderedCtx = bordered.getContext('2d')
+          borderedCtx.fillStyle = settings.borderColor
+          borderedCtx.fillRect(0, 0, bordered.width, bordered.height)
+          borderedCtx.drawImage(canvasRef.current, thickness, thickness)
+          
+          canvasRef.current.width = bordered.width
+          canvasRef.current.height = bordered.height
+          displayCtx.drawImage(bordered, 0, 0)
+        }
+      }
       
       setProcessingMessage('')
       setIsProcessing(false)
@@ -345,7 +383,7 @@ function EditorPage() {
 
   function handleDownload() {
     if (canvasRef.current) {
-      downloadCanvas(canvasRef.current, `maprdy-${Date.now()}.png`)
+      downloadCanvas(canvasRef.current, `maprdy-${Date.now()}`, exportFormat, exportQuality)
     }
   }
 
@@ -445,6 +483,16 @@ function EditorPage() {
   }
   
   function handleMouseMove(e) {
+    // Update cursor position for status bar
+    if (canvasRef.current && canvasAreaRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect()
+      const x = Math.round((e.clientX - rect.left) / zoom)
+      const y = Math.round((e.clientY - rect.top) / zoom)
+      if (x >= 0 && x < canvasRef.current.width && y >= 0 && y < canvasRef.current.height) {
+        setCursorPos({ x, y })
+      }
+    }
+    
     if (!isPanning) return
     
     setPanOffset({
@@ -548,9 +596,44 @@ function EditorPage() {
             </div>
           </button>
           <button className="menu-item">Window</button>
-          <button className="menu-item">Help</button>
+          <button className="menu-item" onClick={() => setShowShortcuts(true)}>Help</button>
         </div>
       </header>
+      
+      {/* Keyboard Shortcuts Modal */}
+      {showShortcuts && (
+        <div className="modal-overlay" onClick={() => setShowShortcuts(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Keyboard Shortcuts</h3>
+              <button onClick={() => setShowShortcuts(false)} className="modal-close">×</button>
+            </div>
+            <div className="modal-body">
+              <div className="shortcut-section">
+                <h4>Zoom & Pan</h4>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>+</kbd><span>Zoom In</span></div>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>-</kbd><span>Zoom Out</span></div>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>0</kbd><span>Fit to Window</span></div>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>1</kbd><span>100% Zoom</span></div>
+                <div className="shortcut-item"><kbd>Space</kbd> + Drag<span>Pan Canvas</span></div>
+                <div className="shortcut-item"><kbd>Scroll</kbd><span>Zoom at Cursor</span></div>
+              </div>
+              <div className="shortcut-section">
+                <h4>Editing</h4>
+                <div className="shortcut-item"><kbd>↑</kbd><span>Increase Contrast</span></div>
+                <div className="shortcut-item"><kbd>↓</kbd><span>Decrease Contrast</span></div>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Z</kbd><span>Undo</span></div>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd><span>Redo</span></div>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Y</kbd><span>Redo</span></div>
+              </div>
+              <div className="shortcut-section">
+                <h4>File</h4>
+                <div className="shortcut-item"><kbd>Ctrl</kbd> + <kbd>S</kbd><span>Download</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="editor-layout">
         {/* Left Panel - Layers */}
@@ -560,14 +643,23 @@ function EditorPage() {
           <div className="layers-list">
             {layers.filter(layer => layer).map(layer => (
               <div key={layer.id} className="layer-item">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={layer.visible}
-                    onChange={() => toggleLayer(layer.id)}
-                  />
-                  <span>{layer.name}</span>
-                </label>
+                <button 
+                  className="layer-visibility"
+                  onClick={() => toggleLayer(layer.id)}
+                  title={layer.visible ? 'Hide layer' : 'Show layer'}
+                >
+                  {layer.visible ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 3C4.5 3 1.73 5.61 1 8c.73 2.39 3.5 5 7 5s6.27-2.61 7-5c-.73-2.39-3.5-5-7-5zm0 8a3 3 0 110-6 3 3 0 010 6zm0-4.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" fill="currentColor"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.359 11.238L15.5 13.379L14.121 14.758L1.243 1.879L2.621 0.5L4.68 2.559C5.711 2.193 6.835 2 8 2C11.866 2 14.677 4.575 15.5 8C15.053 9.659 14.106 11.066 13.359 11.238ZM8 4C6.974 4 6.011 4.263 5.184 4.725L6.54 6.081C6.996 5.724 7.474 5.5 8 5.5C9.381 5.5 10.5 6.619 10.5 8C10.5 8.526 10.276 9.004 9.919 9.46L11.275 10.816C11.737 9.989 12 9.026 12 8C12 5.791 10.209 4 8 4ZM1.5 8C1.947 6.341 2.894 4.934 3.641 3.762L5.062 5.183C4.606 5.54 4.128 5.764 3.602 5.764C2.221 5.764 1.103 6.883 1.103 8.264C1.103 8.79 1.327 9.268 1.684 9.724L0.263 11.145C0.947 9.341 1.894 7.934 1.5 8Z" fill="currentColor"/>
+                    </svg>
+                  )}
+                </button>
+                <span className="layer-name">{layer.name}</span>
+                <div className="layer-color" style={{ background: layer.color }} />
               </div>
             ))}
           </div>
@@ -621,7 +713,12 @@ function EditorPage() {
             <button onClick={handleFitToWindow} title="Fit to Window (Ctrl+0)">Fit</button>
             <button onClick={() => setZoom(1)} title="Actual Size (Ctrl+1)">100%</button>
           </div>
-          <div className="canvas-wrapper">
+          <div className="canvas-wrapper" style={{
+            background: canvasBackground === 'gray' ? '#888888' :
+                       canvasBackground === 'transparent' ? 'transparent' :
+                       canvasBackground === 'checker' ? 'repeating-conic-gradient(#ddd 0% 25%, white 0% 50%) 50% / 20px 20px' :
+                       'white'
+          }}>
             {!imageLoaded && !isProcessing && (
               <div className="canvas-placeholder">
                 <p>No image loaded</p>
@@ -719,6 +816,43 @@ function EditorPage() {
               <span>Edge Detection</span>
             </label>
           </div>
+          
+          <h3>Border</h3>
+          <div className="property-section">
+            <label>
+              <span>Thickness: {settings.borderThickness}px</span>
+              <input 
+                type="range" 
+                min="0" 
+                max="50" 
+                value={settings.borderThickness}
+                onChange={(e) => updateSetting('borderThickness', parseInt(e.target.value))}
+              />
+            </label>
+            
+            {settings.borderThickness > 0 && (
+              <>
+                <label>
+                  <span>Color</span>
+                  <input 
+                    type="color" 
+                    value={settings.borderColor}
+                    onChange={(e) => updateSetting('borderColor', e.target.value)}
+                    style={{width: '100%', height: '32px', cursor: 'pointer'}}
+                  />
+                </label>
+                
+                <label>
+                  <input 
+                    type="checkbox" 
+                    checked={settings.borderOverlap}
+                    onChange={(e) => updateSetting('borderOverlap', e.target.checked)}
+                  />
+                  <span>Overlap Image</span>
+                </label>
+              </>
+            )}
+          </div>
 
           <h3>Color Forcing</h3>
           <div className="property-section">
@@ -750,6 +884,45 @@ function EditorPage() {
               <span>Force White Water</span>
             </label>
           </div>
+          
+          <h3>Export</h3>
+          <div className="property-section">
+            <label>
+              <span>Format</span>
+              <select value={exportFormat} onChange={(e) => setExportFormat(e.target.value)} className="panel-select">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+                <option value="webp">WebP</option>
+              </select>
+            </label>
+            
+            {(exportFormat === 'jpg' || exportFormat === 'webp') && (
+              <label>
+                <span>Quality: {Math.round(exportQuality * 100)}%</span>
+                <input 
+                  type="range" 
+                  min="0.1" 
+                  max="1" 
+                  step="0.01"
+                  value={exportQuality}
+                  onChange={(e) => setExportQuality(parseFloat(e.target.value))}
+                />
+              </label>
+            )}
+          </div>
+          
+          <h3>Canvas</h3>
+          <div className="property-section">
+            <label>
+              <span>Background</span>
+              <select value={canvasBackground} onChange={(e) => setCanvasBackground(e.target.value)} className="panel-select">
+                <option value="white">White</option>
+                <option value="gray">Gray</option>
+                <option value="transparent">Transparent</option>
+                <option value="checker">Checkerboard</option>
+              </select>
+            </label>
+          </div>
 
           <h3>Map Info</h3>
           <div className="property-section">
@@ -767,6 +940,14 @@ function EditorPage() {
       <footer className="status-bar">
         <div className="status-left">
           {imageLoaded ? 'Ready' : 'Loading...'}
+          {imageLoaded && canvasRef.current && (
+            <>
+              <span className="status-separator">|</span>
+              <span>{canvasRef.current.width} × {canvasRef.current.height} px</span>
+              <span className="status-separator">|</span>
+              <span>X: {cursorPos.x} Y: {cursorPos.y}</span>
+            </>
+          )}
         </div>
         <div className="status-right">
           {Math.round(zoom * 100)}%

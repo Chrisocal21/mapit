@@ -250,21 +250,26 @@ export function processImage(canvas, settings) {
   return canvas
 }
 
-export function canvasToBlob(canvas) {
+export function canvasToBlob(canvas, format = 'png', quality = 0.92) {
   return new Promise(resolve => {
-    canvas.toBlob(resolve, 'image/png')
+    const mimeType = format === 'jpg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png'
+    canvas.toBlob(resolve, mimeType, quality)
   })
 }
 
-export function downloadCanvas(canvas, filename = 'maprdy-map.png') {
+export function downloadCanvas(canvas, filename = 'mapframe-export.png', format = 'png', quality = 0.92) {
+  const mimeType = format === 'jpg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png'
+  const ext = format === 'jpg' ? '.jpg' : format === 'webp' ? '.webp' : '.png'
+  const finalFilename = filename.replace(/\.\w+$/, ext)
+  
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = filename
+    a.download = finalFilename
     a.click()
     URL.revokeObjectURL(url)
-  }, 'image/png')
+  }, mimeType, quality)
 }
 
 export async function copyCanvasToClipboard(canvas) {

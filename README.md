@@ -1,6 +1,6 @@
-# 🗺️ maprdy - Map to Laser Ready
+# 🗺️ MapFrame - Professional Map Image Editor
 
-**Generate laser engraving-ready map images from any location worldwide.**
+**Generate professional map images from any location worldwide.**
 
 Perfect for creating custom gifts, artwork, and personalized engravings on glass, wood, or metal.
 
@@ -9,15 +9,15 @@ Perfect for creating custom gifts, artwork, and personalized engravings on glass
 ## 🚀 Quick Start
 
 **Option 1: Use Hosted Version** (Recommended)
-- Visit [maprdy.com](https://maprdy.com)
+- Visit [mapframe.app](https://mapframe.app)
 - No installation required!
 
 **Option 2: Run Locally**
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/maprdy.git
-cd maprdy
+git clone https://github.com/yourusername/mapframe.git
+cd mapframe
 
 # 2. Install dependencies
 npm install

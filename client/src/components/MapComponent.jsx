@@ -37,6 +37,37 @@ function MapComponent({ onBoundsChange, onLocationSelect, selectedLocation, mapS
     isDraggingRectRef.current = isDraggingRect
   }, [isDraggingRect])
 
+  // Helper function to update corner markers
+  const updateCornerMarkers = (bounds) => {
+    if (!cornerMarkersRef.current.length) return
+    const corners = [
+      bounds.getNorthWest(),
+      bounds.getNorthEast(),
+      bounds.getSouthEast(),
+      bounds.getSouthWest()
+    ]
+    cornerMarkersRef.current.forEach((marker, index) => {
+      marker.setLatLng(corners[index])
+    })
+  }
+
+  // Helper function to update selection info
+  const updateSelectionInfo = (bounds) => {
+    const center = bounds.getCenter()
+    const ne = bounds.getNorthEast()
+    const sw = bounds.getSouthWest()
+    
+    // Calculate dimensions in km
+    const widthKm = (ne.lng - sw.lng) * 111.32 * Math.cos(center.lat * Math.PI / 180)
+    const heightKm = (ne.lat - sw.lat) * 110.574
+    
+    setSelectionInfo({
+      center: `${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`,
+      dimensions: `${widthKm.toFixed(2)}km × ${heightKm.toFixed(2)}km`,
+      bounds: `[${sw.lat.toFixed(4)}, ${sw.lng.toFixed(4)}] to [${ne.lat.toFixed(4)}, ${ne.lng.toFixed(4)}]`
+    })
+  }
+
   // Update map style when it changes
   useEffect(() => {
     if (mapInstanceRef.current && tileLayerRef.current) {
@@ -190,38 +221,8 @@ function MapComponent({ onBoundsChange, onLocationSelect, selectedLocation, mapS
         })
       }
       
-      const updateCornerMarkers = (bounds) => {
-        const corners = [
-          bounds.getNorthWest(),
-          bounds.getNorthEast(),
-          bounds.getSouthEast(),
-          bounds.getSouthWest()
-        ]
-        
-        cornerMarkersRef.current.forEach((marker, index) => {
-          marker.setLatLng(corners[index])
-        })
-      }
-      
       // Initialize corner markers
       createCornerMarkers(bounds)
-
-      // Function to update selection info
-      const updateSelectionInfo = (bounds) => {
-        const center = bounds.getCenter()
-        const ne = bounds.getNorthEast()
-        const sw = bounds.getSouthWest()
-        
-        // Calculate dimensions in km
-        const widthKm = (ne.lng - sw.lng) * 111.32 * Math.cos(center.lat * Math.PI / 180)
-        const heightKm = (ne.lat - sw.lat) * 110.574
-        
-        setSelectionInfo({
-          center: `${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`,
-          dimensions: `${widthKm.toFixed(2)}km × ${heightKm.toFixed(2)}km`,
-          bounds: `[${sw.lat.toFixed(4)}, ${sw.lng.toFixed(4)}] to [${ne.lat.toFixed(4)}, ${ne.lng.toFixed(4)}]`
-        })
-      }
 
       // Send initial bounds immediately
       onBoundsChange && onBoundsChange(bounds)
@@ -374,10 +375,23 @@ function MapComponent({ onBoundsChange, onLocationSelect, selectedLocation, mapS
 
   // Fly to selected location when it changes
   useEffect(() => {
-    if (selectedLocation && mapInstanceRef.current) {
+    if (selectedLocation && mapInstanceRef.current && rectangleRef.current) {
       const [lng, lat] = selectedLocation.center
       // Just set the view instantly - no animation to avoid flashing/black screens
       mapInstanceRef.current.setView([lat, lng], 13)
+      
+      // Update rectangle to new map bounds
+      setTimeout(() => {
+        const newBounds = mapInstanceRef.current.getBounds()
+        console.log('🔵 Updating rectangle to new bounds:', newBounds)
+        rectangleRef.current.setBounds(newBounds)
+        updateCornerMarkers(newBounds)
+        if (onBoundsChange) {
+          console.log('📍 Calling onBoundsChange with bounds:', newBounds)
+          onBoundsChange(newBounds)
+        }
+        updateSelectionInfo(newBounds)
+      }, 100)
     }
   }, [selectedLocation])
 

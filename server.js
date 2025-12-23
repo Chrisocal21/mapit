@@ -16,7 +16,14 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve static files from public folder (legacy/backup)
+app.use('/old', express.static(path.join(__dirname, 'public')));
+
+// In production, serve the React build
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client', 'dist')));
+}
 
 // Health check endpoint (for monitoring & deployment verification)
 app.get('/health', (req, res) => {
@@ -31,15 +38,7 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Serve index.html
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
-
-// Serve editor without .html extension
-app.get('/editor', (req, res) => {
-    res.sendFile(__dirname + '/public/editor.html');
-});
+// API routes are defined below, catch-all for React app is at the end
 
 // Proxy endpoint for Mapbox Static Images API
 app.get('/api/mapbox/static', async (req, res) => {
@@ -262,10 +261,15 @@ Purpose: ${purpose || 'general use'}`
     }
 });
 
-// Catch-all route to serve index.html for any non-API routes
-// This prevents 404 errors when refreshing or navigating
+// Catch-all route to serve React app for any non-API routes
+// This enables client-side routing to work properly
 app.get('*', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    if (process.env.NODE_ENV === 'production') {
+        res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+    } else {
+        // In development, redirect to Vite dev server
+        res.redirect('http://localhost:5176');
+    }
 });
 
 // Only start server if not in serverless environment (Vercel)

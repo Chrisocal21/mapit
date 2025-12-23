@@ -1,4 +1,4 @@
-﻿# maprdy - Map to Laser Ready
+﻿# MapFrame - Professional Map Image Editor
 
 <div align="center">
 

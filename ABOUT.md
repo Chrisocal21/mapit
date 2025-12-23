@@ -1,8 +1,8 @@
-# About maprdy
+# About MapFrame
 
-## What Is maprdy?
+## What Is MapFrame?
 
-**maprdy** (maprdy.com) is a specialized web application for capturing, processing, and optimizing map imagery for creative and practical applications. Whether you're creating custom wall art, preparing designs for laser engraving, or generating unique geographical prints, this tool provides professional-grade controls for transforming standard map views into production-ready images.
+**MapFrame** (mapframe.app) is a specialized web application for capturing, processing, and optimizing map imagery for creative and practical applications. Whether you're creating custom wall art, preparing designs for laser engraving, or generating unique geographical prints, this tool provides professional-grade controls for transforming standard map views into production-ready images.
 
 ## Purpose
 
