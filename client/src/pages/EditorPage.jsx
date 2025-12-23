@@ -383,7 +383,7 @@ function EditorPage() {
 
   function handleDownload() {
     if (canvasRef.current) {
-      downloadCanvas(canvasRef.current, `maprdy-${Date.now()}`, exportFormat, exportQuality)
+      downloadCanvas(canvasRef.current, `mapframe-${Date.now()}`, exportFormat, exportQuality)
     }
   }
 

@@ -215,7 +215,7 @@ function MapSelectionPage() {
     <div className="container">
       <header>
         <div className="header-top">
-          <h1>maprdy</h1>
+          <h1 style={{ fontSize: '1.4rem', lineHeight: '1' }}>[MAP  FRAME]</h1>
 
           <div className="search-container">
             <input
